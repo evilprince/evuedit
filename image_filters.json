@@ -1,0 +1,89 @@
+{
+  "version": 1,
+  "filters": [
+    {
+      "id": "cool",
+      "description": "Add a subtle cool blue tone.",
+      "tags": ["cool", "cinematic"],
+      "filterGraph": "colorbalance=rs=-0.04:bs=0.08:rm=-0.03:bm=0.05:rh=-0.02:bh=0.04"
+    },
+    {
+      "id": "monochrome",
+      "description": "Convert the image to black and white with a modest contrast lift.",
+      "tags": ["monochrome", "cinematic"],
+      "filterGraph": "hue=s=0,eq=contrast=1.08"
+    },
+    {
+      "id": "neutral",
+      "description": "Add a small, balanced contrast and saturation lift.",
+      "tags": ["general", "natural"],
+      "filterGraph": "eq=contrast=1.05:saturation=1.04"
+    },
+    {
+      "id": "soft",
+      "description": "Soften contrast and saturation and slightly lift brightness.",
+      "tags": ["soft", "natural"],
+      "filterGraph": "eq=contrast=0.94:saturation=0.96:brightness=0.02"
+    },
+    {
+      "id": "vivid",
+      "description": "Increase contrast and color saturation.",
+      "tags": ["vivid", "colorful"],
+      "filterGraph": "eq=contrast=1.12:saturation=1.2"
+    },
+    {
+      "id": "warm",
+      "description": "Add a subtle warm golden tone.",
+      "tags": ["warm", "natural"],
+      "filterGraph": "colorbalance=rs=0.08:bs=-0.08:rm=0.05:bm=-0.05:rh=0.03:bh=-0.03"
+    },
+    {
+      "id": "masala-glow",
+      "description": "Bright, warm food imagery with gentle detail enhancement.",
+      "tags": ["food", "warm", "vivid"],
+      "properties": {"exposureEV": 0.15, "contrast": 1.08, "saturation": 1.10, "warmth": 0.12, "texture": 0.10}
+    },
+    {
+      "id": "midnight-feast",
+      "description": "A moody, contrast-rich look for evening food scenes.",
+      "tags": ["food", "low-light", "cinematic"],
+      "properties": {"exposureEV": -0.20, "contrast": 1.20, "saturation": 0.98, "warmth": 0.06, "texture": 0.12}
+    },
+    {
+      "id": "cafe-cream",
+      "description": "A bright, soft cream tone for cafes and interiors.",
+      "tags": ["cafe", "soft", "warm"],
+      "properties": {"exposureEV": 0.25, "contrast": 0.95, "saturation": 0.98, "warmth": 0.06, "texture": 0.00}
+    },
+    {
+      "id": "street-food-punch",
+      "description": "Punchy color and crisp detail for street food scenes.",
+      "tags": ["food", "colorful", "vivid"],
+      "properties": {"exposureEV": 0.10, "contrast": 1.12, "saturation": 1.16, "warmth": 0.02, "texture": 0.15}
+    },
+    {
+      "id": "chefs-editorial",
+      "description": "A restrained editorial look with clean color and detail.",
+      "tags": ["food", "natural", "editorial"],
+      "properties": {"exposureEV": 0.00, "contrast": 1.06, "saturation": 0.90, "warmth": 0.03, "texture": 0.05}
+    },
+    {
+      "id": "crispy-detail",
+      "description": "A sharper, textured look for crisp food details.",
+      "tags": ["food", "detail", "texture"],
+      "properties": {"exposureEV": 0.05, "contrast": 1.12, "saturation": 1.04, "warmth": 0.03, "texture": 0.25}
+    },
+    {
+      "id": "dessert-velvet",
+      "description": "A softly warm look for desserts and rich textures.",
+      "tags": ["dessert", "soft", "warm"],
+      "properties": {"exposureEV": 0.10, "contrast": 1.04, "saturation": 1.05, "warmth": 0.06, "texture": -0.03}
+    },
+    {
+      "id": "true-taste",
+      "description": "A near-neutral rendering that keeps food color natural.",
+      "tags": ["food", "natural", "neutral"],
+      "properties": {"exposureEV": 0.00, "contrast": 1.00, "saturation": 1.00, "warmth": 0.00, "texture": 0.03}
+    }
+  ]
+}

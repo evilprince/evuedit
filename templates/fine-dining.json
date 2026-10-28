@@ -1,0 +1,40 @@
+{
+  "id": "fine-dining",
+  "version": 1,
+  "description": "Understated premium layout for chef-led and fine-dining content.",
+  "canvas": {
+    "youtube": {
+      "width": 1280,
+      "height": 720
+    },
+    "instagram": {
+      "width": 1080,
+      "height": 1920
+    }
+  },
+  "layout": {
+    "imageMode": "cover",
+    "subjectPosition": "center",
+    "gradient": "bottom-up-soft",
+    "headlinePosition": "bottom-left",
+    "headlineMaxLines": 2,
+    "headlineMaxWords": 4,
+    "font": "assets/fonts/Montserrat-ExtraBold.ttf",
+    "fontSizeRatio": 0.065,
+    "textColor": "#FFFFFF",
+    "accentColor": "#D8BD8A",
+    "shadow": true,
+    "labelText": "THE CHEF’S TABLE",
+    "labelPosition": "top-left",
+    "labelBackground": "#20201D",
+    "letterSpacingRatio": 0.006,
+    "border": true,
+    "borderColor": "#D8BD8A",
+    "borderWidthRatio": 0.003
+  },
+  "export": {
+    "format": "jpeg",
+    "quality": 94,
+    "colorSpace": "sRGB"
+  }
+}

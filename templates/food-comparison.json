@@ -1,0 +1,42 @@
+{
+  "id": "food-comparison",
+  "version": 1,
+  "description": "Split-screen layout for budget-versus-premium or before-versus-after food comparisons.",
+  "canvas": {
+    "youtube": {
+      "width": 1280,
+      "height": 720
+    },
+    "instagram": {
+      "width": 1080,
+      "height": 1920
+    }
+  },
+  "layout": {
+    "imageMode": "split-cover",
+    "splitDirection": "vertical",
+    "splitRatio": 0.5,
+    "leftLabel": "BUDGET",
+    "rightLabel": "PREMIUM",
+    "leftLabelColor": "#FFD43B",
+    "rightLabelColor": "#FFFFFF",
+    "headlinePosition": "top-center",
+    "headlineMaxLines": 2,
+    "headlineMaxWords": 5,
+    "font": "assets/fonts/Anton-Regular.ttf",
+    "fontSizeRatio": 0.082,
+    "textColor": "#FFFFFF",
+    "accentColor": "#FFD43B",
+    "shadow": true,
+    "divider": true,
+    "dividerColor": "#FFFFFF",
+    "dividerWidthRatio": 0.006,
+    "labelBackground": "#171717",
+    "border": false
+  },
+  "export": {
+    "format": "jpeg",
+    "quality": 92,
+    "colorSpace": "sRGB"
+  }
+}

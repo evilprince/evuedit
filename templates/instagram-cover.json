@@ -1,0 +1,43 @@
+{
+  "id": "instagram-cover",
+  "version": 1,
+  "description": "Vertical Reel cover with a central safe area for readable text.",
+  "canvas": {
+    "youtube": {
+      "width": 1280,
+      "height": 720
+    },
+    "instagram": {
+      "width": 1080,
+      "height": 1920
+    }
+  },
+  "layout": {
+    "imageMode": "cover",
+    "subjectPosition": "center",
+    "gradient": "bottom-up",
+    "headlinePosition": "center",
+    "headlineMaxLines": 3,
+    "headlineMaxWords": 5,
+    "font": "assets/fonts/Montserrat-ExtraBold.ttf",
+    "fontSizeRatio": 0.075,
+    "textColor": "#FFFFFF",
+    "accentColor": "#FFD43B",
+    "shadow": true,
+    "labelText": "FOOD SPOT",
+    "labelPosition": "center-top",
+    "labelBackground": "#171717",
+    "border": false,
+    "safeArea": {
+      "topRatio": 0.15,
+      "bottomRatio": 0.2,
+      "leftRatio": 0.08,
+      "rightRatio": 0.08
+    }
+  },
+  "export": {
+    "format": "jpeg",
+    "quality": 92,
+    "colorSpace": "sRGB"
+  }
+}

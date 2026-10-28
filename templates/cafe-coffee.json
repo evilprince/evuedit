@@ -1,0 +1,39 @@
+{
+  "id": "cafe-coffee",
+  "version": 1,
+  "description": "Warm, minimal cover for cafés, coffee, brunch and pastries.",
+  "canvas": {
+    "youtube": {
+      "width": 1280,
+      "height": 720
+    },
+    "instagram": {
+      "width": 1080,
+      "height": 1920
+    }
+  },
+  "layout": {
+    "imageMode": "cover",
+    "subjectPosition": "right",
+    "gradient": "left-to-right-soft",
+    "headlinePosition": "left-center",
+    "headlineMaxLines": 3,
+    "headlineMaxWords": 5,
+    "font": "assets/fonts/Montserrat-ExtraBold.ttf",
+    "fontSizeRatio": 0.072,
+    "textColor": "#FFF8ED",
+    "accentColor": "#C7834B",
+    "shadow": false,
+    "labelText": "CAFE FINDS",
+    "labelPosition": "top-left",
+    "labelBackground": "#49352A",
+    "panelColor": "#49352A",
+    "panelOpacity": 0.78,
+    "border": false
+  },
+  "export": {
+    "format": "jpeg",
+    "quality": 92,
+    "colorSpace": "sRGB"
+  }
+}

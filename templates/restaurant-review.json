@@ -1,0 +1,41 @@
+{
+  "id": "restaurant-review",
+  "version": 1,
+  "description": "Editorial restaurant visit cover with location and rating callouts.",
+  "canvas": {
+    "youtube": {
+      "width": 1280,
+      "height": 720
+    },
+    "instagram": {
+      "width": 1080,
+      "height": 1920
+    }
+  },
+  "layout": {
+    "imageMode": "cover",
+    "subjectPosition": "right",
+    "gradient": "left-to-right",
+    "headlinePosition": "left-center",
+    "headlineMaxLines": 3,
+    "headlineMaxWords": 5,
+    "font": "assets/fonts/Montserrat-ExtraBold.ttf",
+    "fontSizeRatio": 0.075,
+    "textColor": "#FFFFFF",
+    "accentColor": "#E8B86D",
+    "shadow": true,
+    "labelText": "RESTAURANT REVIEW",
+    "labelPosition": "top-left",
+    "labelBackground": "#202020",
+    "secondaryTextPosition": "bottom-left",
+    "secondaryTextStyle": "location-tag",
+    "border": true,
+    "borderColor": "#E8B86D",
+    "borderWidthRatio": 0.004
+  },
+  "export": {
+    "format": "jpeg",
+    "quality": 92,
+    "colorSpace": "sRGB"
+  }
+}

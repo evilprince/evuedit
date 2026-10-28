@@ -1,0 +1,38 @@
+{
+  "id": "dessert",
+  "version": 1,
+  "description": "Bright, playful look for cakes, ice cream and sweet treats.",
+  "canvas": {
+    "youtube": {
+      "width": 1280,
+      "height": 720
+    },
+    "instagram": {
+      "width": 1080,
+      "height": 1920
+    }
+  },
+  "layout": {
+    "imageMode": "cover",
+    "subjectPosition": "right",
+    "gradient": "left-to-right",
+    "headlinePosition": "left-center",
+    "headlineMaxLines": 3,
+    "headlineMaxWords": 5,
+    "font": "assets/fonts/Montserrat-ExtraBold.ttf",
+    "fontSizeRatio": 0.085,
+    "textColor": "#FFFFFF",
+    "accentColor": "#FF75A0",
+    "shadow": true,
+    "labelText": "SWEET TOOTH",
+    "labelPosition": "top-left",
+    "labelBackground": "#6E3154",
+    "stickerStyle": "rounded-pill",
+    "border": false
+  },
+  "export": {
+    "format": "jpeg",
+    "quality": 92,
+    "colorSpace": "sRGB"
+  }
+}

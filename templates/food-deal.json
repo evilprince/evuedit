@@ -1,0 +1,44 @@
+{
+  "id": "food-deal",
+  "version": 1,
+  "description": "Price-forward design for affordable meals, deals and food finds.",
+  "canvas": {
+    "youtube": {
+      "width": 1280,
+      "height": 720
+    },
+    "instagram": {
+      "width": 1080,
+      "height": 1920
+    }
+  },
+  "layout": {
+    "imageMode": "cover",
+    "subjectPosition": "right",
+    "gradient": "left-to-right",
+    "headlinePosition": "left-center",
+    "headlineMaxLines": 3,
+    "headlineMaxWords": 5,
+    "font": "assets/fonts/Anton-Regular.ttf",
+    "fontSizeRatio": 0.09,
+    "textColor": "#FFFFFF",
+    "accentColor": "#FFD43B",
+    "shadow": true,
+    "labelText": "BUDGET FOOD FIND",
+    "labelPosition": "top-left",
+    "labelBackground": "#16803C",
+    "priceBadge": {
+      "enabled": true,
+      "position": "bottom-left",
+      "background": "#FFD43B",
+      "textColor": "#171717",
+      "prefix": "₹"
+    },
+    "border": false
+  },
+  "export": {
+    "format": "jpeg",
+    "quality": 92,
+    "colorSpace": "sRGB"
+  }
+}

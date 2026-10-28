@@ -1,0 +1,61 @@
+{
+  "version": 1,
+  "tags": [
+    { "id": "cafe", "description": "Cafe, coffee, and dessert scenes" },
+    { "id": "cinematic", "description": "Moody or stylized cinematic scenes" },
+    { "id": "colorful", "description": "Scenes that benefit from richer color" },
+    { "id": "cool", "description": "Cool or blue-toned treatment" },
+    { "id": "food", "description": "Food preparation, dishes, and restaurants" },
+    { "id": "general", "description": "Everyday footage and flexible starting looks" },
+    { "id": "low-light", "description": "Dim restaurant and night scenes" },
+    { "id": "monochrome", "description": "Black-and-white treatment" },
+    { "id": "natural", "description": "Natural color and restrained grading" },
+    { "id": "soft", "description": "Soft, bright, gentle treatment" },
+    { "id": "warm", "description": "Warm color and golden tones" },
+    { "id": "vivid", "description": "Punchy, vivid color" }
+  ],
+  "useCases": [
+    {
+      "id": "food-video",
+      "name": "Food video",
+      "description": "Food preparation, dishes, and restaurant scenes.",
+      "tags": ["food"]
+    },
+    {
+      "id": "cafe-dessert",
+      "name": "Cafe and dessert",
+      "description": "Coffee, cafes, bakeries, and desserts.",
+      "tags": ["cafe", "warm", "soft"]
+    },
+    {
+      "id": "low-light-dining",
+      "name": "Low-light dining",
+      "description": "Dim restaurants and evening food scenes.",
+      "tags": ["food", "low-light", "cinematic"]
+    },
+    {
+      "id": "natural-look",
+      "name": "Natural look",
+      "description": "Subtle color treatment that preserves a natural appearance.",
+      "tags": ["natural"]
+    },
+    {
+      "id": "vivid-street-food",
+      "name": "Vivid street food",
+      "description": "Colorful street food and market scenes.",
+      "tags": ["food", "colorful", "vivid"]
+    },
+    {
+      "id": "monochrome-scene",
+      "name": "Monochrome",
+      "description": "Black-and-white footage.",
+      "tags": ["monochrome"]
+    },
+    {
+      "id": "general-purpose",
+      "name": "General purpose",
+      "description": "Flexible starting looks for everyday footage.",
+      "tags": ["general"]
+    }
+  ]
+}

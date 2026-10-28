@@ -1,0 +1,40 @@
+{
+  "id": "food-challenge",
+  "version": 1,
+  "description": "Energetic, high-contrast thumbnail for spicy food or eating challenges.",
+  "canvas": {
+    "youtube": {
+      "width": 1280,
+      "height": 720
+    },
+    "instagram": {
+      "width": 1080,
+      "height": 1920
+    }
+  },
+  "layout": {
+    "imageMode": "cover",
+    "subjectPosition": "center",
+    "gradient": "bottom-up",
+    "headlinePosition": "top-center",
+    "headlineMaxLines": 3,
+    "headlineMaxWords": 5,
+    "font": "assets/fonts/Anton-Regular.ttf",
+    "fontSizeRatio": 0.1,
+    "textColor": "#FFFFFF",
+    "accentColor": "#FF3B30",
+    "shadow": true,
+    "labelText": "FOOD CHALLENGE",
+    "labelPosition": "top-left",
+    "labelBackground": "#FF3B30",
+    "outlineText": true,
+    "outlineColor": "#171717",
+    "outlineWidthRatio": 0.005,
+    "border": false
+  },
+  "export": {
+    "format": "jpeg",
+    "quality": 92,
+    "colorSpace": "sRGB"
+  }
+}

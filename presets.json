@@ -1,0 +1,115 @@
+{
+  "version": 2,
+  "inputProfile": "samsung-log",
+  "workingOutput": "rec709-sdr",
+  "presets": [
+    {
+      "id": "masala-gold",
+      "description": "Warm golden color with restrained highlights and lifted shadows.",
+      "tags": ["food", "warm", "natural"],
+      "exposureEV": 0.0,
+      "contrast": 1.08,
+      "saturation": 1.08,
+      "highlights": -0.12,
+      "shadows": 0.12,
+      "warmth": 0.18,
+      "lutIntensity": 0.0
+    },
+    {
+      "id": "midnight-diner",
+      "description": "A darker, higher-contrast look with subdued color and deeper shadows.",
+      "tags": ["food", "low-light", "cinematic"],
+      "exposureEV": -0.15,
+      "contrast": 1.18,
+      "saturation": 0.96,
+      "highlights": -0.18,
+      "shadows": -0.18,
+      "warmth": 0.10,
+      "lutIntensity": 0.0
+    },
+    {
+      "id": "cafe-cream",
+      "description": "A soft, bright look with warm tones and open shadows.",
+      "tags": ["cafe", "warm", "soft"],
+      "exposureEV": 0.15,
+      "contrast": 0.96,
+      "saturation": 0.97,
+      "highlights": -0.10,
+      "shadows": 0.18,
+      "warmth": 0.08,
+      "lutIntensity": 0.0
+    },
+    {
+      "id": "street-food-pop",
+      "description": "A vivid, punchy look for colorful food and street scenes.",
+      "tags": ["food", "colorful", "vivid"],
+      "exposureEV": 0.05,
+      "contrast": 1.12,
+      "saturation": 1.16,
+      "highlights": -0.10,
+      "shadows": 0.05,
+      "warmth": 0.02,
+      "lutIntensity": 0.0
+    },
+    {
+      "id": "chefs-table",
+      "description": "A restrained, natural look that preserves highlight detail.",
+      "tags": ["food", "natural"],
+      "exposureEV": 0.0,
+      "contrast": 1.07,
+      "saturation": 0.92,
+      "highlights": -0.15,
+      "shadows": 0.06,
+      "warmth": 0.04,
+      "lutIntensity": 0.0
+    },
+    {
+      "id": "neutral-contrast",
+      "description": "Slightly richer contrast and color.",
+      "tags": ["general", "natural"],
+      "exposureEV": 0.0,
+      "contrast": 1.08,
+      "saturation": 1.08,
+      "highlights": 0.0,
+      "shadows": 0.0,
+      "warmth": 0.0,
+      "lutIntensity": 0.0
+    },
+    {
+      "id": "cinematic-warm",
+      "description": "Warm highlights with gently reduced saturation.",
+      "tags": ["warm", "cinematic"],
+      "exposureEV": 0.0,
+      "contrast": 1.08,
+      "saturation": 0.92,
+      "highlights": 0.0,
+      "shadows": 0.0,
+      "warmth": 0.4,
+      "lutIntensity": 0.0
+    },
+    {
+      "id": "cool",
+      "description": "Cooler blue-toned image with moderate contrast.",
+      "tags": ["cool", "cinematic"],
+      "exposureEV": 0.0,
+      "contrast": 1.06,
+      "saturation": 0.96,
+      "highlights": 0.0,
+      "shadows": 0.0,
+      "warmth": -0.37,
+      "lutIntensity": 0.0
+    },
+    {
+      "id": "monochrome",
+      "description": "Black and white with a modest contrast lift.",
+      "tags": ["monochrome", "cinematic"],
+      "exposureEV": 0.0,
+      "contrast": 1.08,
+      "saturation": 0.0,
+      "highlights": 0.0,
+      "shadows": 0.0,
+      "warmth": 0.0,
+      "lutIntensity": 0.0
+    }
+  ]
+}
