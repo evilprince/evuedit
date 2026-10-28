@@ -2,20 +2,32 @@
 
 `evuedit` is a command-line helper for video and image editing tasks. It uses a tool-based interface: each editing tool owns its options and implementation, while shared CLI dispatch selects the tool. The `preset` tool applies video color presets; `evufilters` applies named effects to still images.
 
+## Install
+
+Install a prebuilt release on macOS or Linux without installing Go:
+
+```sh
+curl -fsSL https://raw.githubusercontent.com/evilprince/evuedit/main/scripts/install-release.sh | sh
+```
+
+The installer selects the matching platform build, verifies its checksum, installs to `~/.local/bin/evuedit`, and creates `~/evueditout`. If FFmpeg is missing, it offers to install it through your system package manager. Go is needed only for building from source. See [INSTALL.md](INSTALL.md) for version selection, PATH setup, external tools, source installation, and release publishing.
+
+The prebuilt CLI still uses external media tools: FFmpeg (`ffmpeg` and `ffprobe`) for video presets and image filters, and ImageMagick (`magick`) for thumbnails.
+
 ## Requirements
 
 - Linux or macOS
-- FFmpeg available on `PATH` (`ffmpeg` command)
+- FFmpeg available on `PATH` (`ffmpeg` and `ffprobe` commands)
 - ImageMagick available on `PATH` (needed for `evuthumb`)
-- Go 1.22 or later to build from source
+- Go 1.22 or later only when building from source
 
-## Build
+## Build from source
 
 ```sh
 go build -o evuedit .
 ```
 
-Run `./scripts/install.sh` to build and install the executable to `~/.local/bin/evuedit`. The installer also creates `~/evueditout`, the fixed output directory used by the CLI. If ImageMagick is missing, it asks whether to install it using the system package manager; use `--with-imagemagick` to opt in directly or `--without-imagemagick` to skip it. `./scripts/install-imagemagick.sh` can also install it separately. The installer does not install Homebrew itself. Ensure `~/.local/bin` is on your `PATH`. To build for another supported OS/architecture, set Go's `GOOS` and `GOARCH` before running `go build` (for example, `GOOS=linux GOARCH=amd64 go build -o evuedit-linux-amd64 .`). Install FFmpeg separately using the package manager or distribution method for your operating system.
+Run `./scripts/install.sh` to build and install the executable to `~/.local/bin/evuedit`. The installer also creates `~/evueditout` and can offer to install FFmpeg and ImageMagick if missing. Use `--with-ffmpeg` or `--with-imagemagick` to install either dependency directly, or the corresponding `--without-*` option to skip it. Separate helpers are available at `./scripts/install-ffmpeg.sh` and `./scripts/install-imagemagick.sh`. These package installers do not install Homebrew itself. Ensure `~/.local/bin` is on your `PATH`. To build for another supported OS/architecture, set Go's `GOOS` and `GOARCH` before running `go build` (for example, `GOOS=linux GOARCH=amd64 go build -o evuedit-linux-amd64 .`).
 
 ## Apply a color preset
 
