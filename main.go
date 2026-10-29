@@ -20,6 +20,7 @@ var tools = []Tool{
 	presetTool{},
 	imageFilterTool{},
 	thumbTool{},
+	motionTool{},
 }
 
 func main() {

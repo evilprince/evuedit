@@ -141,8 +141,14 @@ func TestImageFilterPropertyCatalogPreservesFoodLooks(t *testing.T) {
 func TestImageResizePresetsIncludePlatformDimensions(t *testing.T) {
 	// Platform resize aliases must stay mapped to the exact requested canvases.
 	for name, want := range map[string]imageResizeSize{
-		"youtube":   {width: 1280, height: 720},
-		"instagram": {width: 1080, height: 1920},
+		"youtube":               {width: 1280, height: 720},
+		"instagram":             {width: 1080, height: 1920},
+		"facebook":              {width: 1080, height: 1920},
+		"facebook-video":        {width: 1280, height: 720},
+		"facebook-feed":         {width: 1080, height: 1350},
+		"facebook-square":       {width: 1080, height: 1080},
+		"facebook-reels":        {width: 1080, height: 1920},
+		"facebook-link-preview": {width: 1200, height: 630},
 	} {
 		if got := imageResizeSizes[name]; got != want {
 			t.Errorf("resize %s = %+v, want %+v", name, got, want)
@@ -255,7 +261,7 @@ func TestImageFilterToolRunsFFmpegAndDoesNotOverwrite(t *testing.T) {
 	t.Setenv("HOME", homeDir)
 	t.Setenv("EVUFILTERS_TEST_ARG_LOG", logPath)
 	var stdout, stderr bytes.Buffer
-	if err := (imageFilterTool{}).Run([]string{"--filter", "warm", "--file", input, "--output", "warm", "--format", "webp", "--quality", "75", "--resize", "square"}, &stdout, &stderr); err != nil {
+	if err := (imageFilterTool{}).Run([]string{"--filter", "warm", "--file", input, "--output", "warm", "--format", "webp", "--quality", "75", "--resize", "facebook"}, &stdout, &stderr); err != nil {
 		t.Fatalf("filter run returned error: %v; stderr: %s", err, stderr.String())
 	}
 	output := filepath.Join(homeDir, "evueditout", "warm.webp")
@@ -267,7 +273,7 @@ func TestImageFilterToolRunsFFmpegAndDoesNotOverwrite(t *testing.T) {
 		t.Fatal(err)
 	}
 	argText := string(args)
-	for _, expected := range []string{"colorbalance=", "scale=1080:1080:force_original_aspect_ratio=increase,crop=1080:1080", "-frames:v", "1", "libwebp", "-quality", "75", output, input} {
+	for _, expected := range []string{"colorbalance=", "scale=1080:1920:force_original_aspect_ratio=increase,crop=1080:1920", "-frames:v", "1", "libwebp", "-quality", "75", output, input} {
 		if !strings.Contains(argText, expected) {
 			t.Errorf("FFmpeg arguments missing %q: %s", expected, argText)
 		}
@@ -275,7 +281,7 @@ func TestImageFilterToolRunsFFmpegAndDoesNotOverwrite(t *testing.T) {
 	if !strings.Contains(stdout.String(), "Wrote "+output) {
 		t.Errorf("success output missing output path: %s", stdout.String())
 	}
-	if err := (imageFilterTool{}).Run([]string{"--filter", "warm", "--file", input, "--output", "warm", "--format", "webp", "--quality", "75", "--resize", "square"}, &stdout, &stderr); err == nil || !strings.Contains(err.Error(), "already exists") {
+	if err := (imageFilterTool{}).Run([]string{"--filter", "warm", "--file", input, "--output", "warm", "--format", "webp", "--quality", "75", "--resize", "facebook"}, &stdout, &stderr); err == nil || !strings.Contains(err.Error(), "already exists") {
 		t.Fatalf("existing output error = %v", err)
 	}
 }

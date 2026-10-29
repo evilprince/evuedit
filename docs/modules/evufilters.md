@@ -58,12 +58,18 @@ Use `--resize` with one of the built-in output dimensions. The image is scaled p
 | `landscape` | 1920×1080 | Widescreen post or thumbnail |
 | `youtube` | 1280×720 | YouTube 16:9 image |
 | `instagram` | 1080×1920 | Instagram vertical image |
+| `facebook-video` | 1280×720 | Facebook video (16:9) |
+| `facebook-feed` | 1080×1350 | Facebook feed (4:5) |
+| `facebook-square` | 1080×1080 | Facebook square (1:1) |
+| `facebook-reels` | 1080×1920 | Facebook Reels (9:16) |
+| `facebook-link-preview` | 1200×630 | Facebook link preview (1.91:1) |
+| `facebook` | 1080×1920 | Alias for `facebook-reels` |
 
-For example, resize and convert to WebP:
+For example, make an image for a Facebook feed post and convert to WebP:
 
 ```sh
 evuedit --module evufilters --filter masala-glow \
-  --file ./photo.jpg --output photo --resize story --format webp --quality 85
+  --file ./photo.jpg --output photo --resize facebook-feed --format webp --quality 85
 ```
 
 When `--format` is provided without an extension on `--output`, the CLI adds the matching extension. If `--output` already has an extension, it must agree with `--format`. Without `--format`, the output extension selects the format as before. `--quality` accepts 1–100 for JPEG and WebP; the default is 90. JPEG quality is translated to FFmpeg's quality scale. PNG is lossless, so `--quality` is rejected for PNG output. Without `--resize`, output keeps the source dimensions.

@@ -1,6 +1,6 @@
 # Imported thumbnail templates
 
-This folder contains the ten JSON layout templates from `foodthumb-templates-download.zip`.
+This folder contains the ten JSON layout templates from `foodthumb-templates-download.zip`. Each template includes YouTube, Instagram, and five Facebook placement canvases: video, feed, square, Reels, and link preview. The `facebook` CLI platform alias selects the Reels canvas.
 
 The CLI embeds these files into the runtime catalog at build time. Rebuild `evuedit` after
 changing a template. When an ID exists in both this folder and the base catalog in

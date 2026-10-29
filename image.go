@@ -43,12 +43,18 @@ type imageResizeSize struct {
 }
 
 var imageResizeSizes = map[string]imageResizeSize{
-	"square":    {width: 1080, height: 1080},
-	"portrait":  {width: 1080, height: 1350},
-	"story":     {width: 1080, height: 1920},
-	"landscape": {width: 1920, height: 1080},
-	"youtube":   {width: 1280, height: 720},
-	"instagram": {width: 1080, height: 1920},
+	"square":                {width: 1080, height: 1080},
+	"portrait":              {width: 1080, height: 1350},
+	"story":                 {width: 1080, height: 1920},
+	"landscape":             {width: 1920, height: 1080},
+	"youtube":               {width: 1280, height: 720},
+	"instagram":             {width: 1080, height: 1920},
+	"facebook":              {width: 1080, height: 1920}, // compatibility alias for Facebook Reels
+	"facebook-video":        {width: 1280, height: 720},
+	"facebook-feed":         {width: 1080, height: 1350},
+	"facebook-square":       {width: 1080, height: 1080},
+	"facebook-reels":        {width: 1080, height: 1920},
+	"facebook-link-preview": {width: 1200, height: 630},
 }
 
 //go:embed image_filters.json
@@ -370,7 +376,7 @@ func sameImageFormat(ext, canonical string) bool {
 }
 
 func imageResizeSizeNames() []string {
-	return []string{"instagram", "landscape", "portrait", "square", "story", "youtube"}
+	return []string{"facebook", "facebook-feed", "facebook-link-preview", "facebook-reels", "facebook-square", "facebook-video", "instagram", "landscape", "portrait", "square", "story", "youtube"}
 }
 
 func printImageFilterList(w io.Writer, filters []imageFilter) {
@@ -388,7 +394,7 @@ func printImageFilterHelp(w io.Writer) {
 	fmt.Fprintln(w, "Usage: evuedit --module evufilters --filter <name|all> --file <inputImage> --output <outputImage>")
 	fmt.Fprintln(w, "Apply a named filter to a still image. Output is written to ~/evueditout.")
 	fmt.Fprintln(w, "Supported formats: JPEG, PNG, and WebP. Without --resize, output preserves the image dimensions.")
-	fmt.Fprintln(w, "Resize presets: square (1080x1080), portrait (1080x1350), story/instagram (1080x1920), landscape (1920x1080), youtube (1280x720); images are proportionally scaled and center-cropped.")
+	fmt.Fprintln(w, "Resize presets: square (1080x1080), portrait (1080x1350), story/instagram/facebook-reels (1080x1920), landscape (1920x1080), youtube/facebook-video (1280x720), facebook-feed (1080x1350), facebook-square (1080x1080), facebook-link-preview (1200x630); facebook aliases facebook-reels.")
 	fmt.Fprintln(w, "--format selects jpg, png, or webp. --quality sets JPEG/WebP quality from 1 to 100; PNG is lossless.")
 	fmt.Fprintln(w, "Use --list to list the available filters.")
 	fmt.Fprintln(w, "With --filter all, --output is a filename base; outputs are named <base>-<filter>.<ext>.")

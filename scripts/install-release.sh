@@ -17,7 +17,7 @@ Install the prebuilt evuedit CLI from GitHub Releases.
 Usage: scripts/install-release.sh [--version latest|TAG] [--install-dir PATH] [--with-ffmpeg | --without-ffmpeg]
 
 Options:
-  --version TAG       Install a release tag such as v0.1.0 (default: latest).
+  --version TAG       Install a release tag such as v0.2.0 (default: latest).
   --install-dir PATH  Install the binary here (default: ~/.local/bin).
   --with-ffmpeg       Install FFmpeg if missing using the system package manager.
   --without-ffmpeg    Skip the FFmpeg install prompt.
@@ -135,14 +135,14 @@ if ! command -v ffmpeg >/dev/null 2>&1 || ! command -v ffprobe >/dev/null 2>&1; 
 	if [ "$ffmpeg_mode" = install ]; then
 		install_ffmpeg
 	elif [ "$ffmpeg_mode" = prompt ] && [ -t 0 ]; then
-		printf '%s' 'FFmpeg is required for video presets and image filters. Install it now using your system package manager? [y/N] '
+		printf '%s' 'FFmpeg is required for video presets, image filters, and animated videos. Install it now using your system package manager? [y/N] '
 		read -r answer
 		case "$answer" in
 			y|Y|yes|YES|Yes) install_ffmpeg ;;
 			*) printf '%s\n' 'Skipping FFmpeg. Install it later with scripts/install-ffmpeg.sh.' ;;
 		esac
 	else
-		printf '%s\n' 'Note: FFmpeg is not on PATH; video presets and image filters will need it. Install later with scripts/install-ffmpeg.sh.'
+		printf '%s\n' 'Note: FFmpeg is not on PATH; video presets, image filters, and animated videos will need it. Install later with scripts/install-ffmpeg.sh.'
 	fi
 fi
 if ! command -v magick >/dev/null 2>&1 && ! { command -v convert >/dev/null 2>&1 && convert -version 2>&1 | head -n 1 | grep -q ImageMagick; }; then

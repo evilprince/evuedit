@@ -13,7 +13,7 @@ curl -fsSL https://raw.githubusercontent.com/evilprince/evuedit/main/scripts/ins
 To install a specific release, pass its tag to the installer:
 
 ```sh
-curl -fsSL https://raw.githubusercontent.com/evilprince/evuedit/main/scripts/install-release.sh | sh -s -- --version v0.1.0
+curl -fsSL https://raw.githubusercontent.com/evilprince/evuedit/main/scripts/install-release.sh | sh -s -- --version v0.2.0
 ```
 
 The installer downloads the matching macOS or Linux binary, checks its SHA-256 checksum, installs it to `~/.local/bin/evuedit`, and creates `~/evueditout` for generated files. If FFmpeg is missing, the installer offers to install it. Package installation may ask for your administrator password. To install FFmpeg without a prompt, use `--with-ffmpeg`; to skip the prompt, use `--without-ffmpeg`:
@@ -38,7 +38,7 @@ evuedit --help
 
 The evuedit executable is self-contained, but media processing uses these separate programs:
 
-- FFmpeg, including `ffmpeg` and `ffprobe`, for video presets and image filters.
+- FFmpeg, including `ffmpeg` and `ffprobe`, for video presets, image filters, and animated videos.
 - ImageMagick, with the `magick` command, for thumbnail generation.
 
 The installer can offer to install FFmpeg. ImageMagick is still installed separately for `evuthumb`; install it with your system package manager, or use `scripts/install-imagemagick.sh` from a source checkout.
@@ -70,8 +70,8 @@ The `~/evueditout` folder contains your generated media and is left untouched.
 After merging code to `main`, create and push a version tag to publish a release:
 
 ```sh
-git tag v0.1.0
-git push origin v0.1.0
+git tag v0.2.0
+git push origin v0.2.0
 ```
 
 GitHub Actions builds archives for macOS Intel, Apple Silicon, Linux x86_64, and Linux ARM64, creates `SHA256SUMS`, and publishes them to GitHub Releases. Once a release exists, users can install it with the command above. The repository must be public for anyone to download its releases without signing in.

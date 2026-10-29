@@ -1,0 +1,29 @@
+{
+  "version": 1,
+  "templates": [
+    {
+      "id": "food-promo",
+      "version": 1,
+      "description": "Portrait food promo with animated headline and optional moving subject cutout.",
+      "canvas": {"width": 1080, "height": 1920},
+      "durationSeconds": 8,
+      "fps": 30,
+      "headline": {
+        "font": "Sans",
+        "fontSize": 96,
+        "color": "white",
+        "position": "bottom-center",
+        "animation": "fade",
+        "startSeconds": 0.4,
+        "durationSeconds": 0.8
+      },
+      "subject": {
+        "maxWidthRatio": 0.72,
+        "maxHeightRatio": 0.58,
+        "position": "center",
+        "animation": "float"
+      },
+      "export": {"format": "mp4", "videoCodec": "libx264", "pixelFormat": "yuv420p", "crf": 20}
+    }
+  ]
+}

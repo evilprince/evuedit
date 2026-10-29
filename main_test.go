@@ -72,6 +72,17 @@ func TestRunDispatchesToEvuthumbModule(t *testing.T) {
 	}
 }
 
+func TestRunDispatchesToEvumotionModule(t *testing.T) {
+	// Motion module help must be reachable through the shared tool registry.
+	var stdout, stderr bytes.Buffer
+	if err := run([]string{"--module", "evumotion", "--help"}, &stdout, &stderr); err != nil {
+		t.Fatalf("run returned error: %v", err)
+	}
+	if !strings.Contains(stdout.String(), "--foreground") || !strings.Contains(stdout.String(), "--template") {
+		t.Fatalf("evumotion help was not displayed: %s", stdout.String())
+	}
+}
+
 func TestExtractToolRejectsDuplicateSelectors(t *testing.T) {
 	// Rejecting duplicate global selectors prevents ambiguous tool selection.
 	_, _, err := extractTool([]string{"--tool", "preset", "--tool=resize"})

@@ -6,8 +6,43 @@
       "version": 1,
       "description": "Place the food subject on the right with a bold headline on the left.",
       "canvas": {
-        "youtube": {"width": 1280, "height": 720},
-        "instagram": {"width": 1080, "height": 1920}
+        "youtube": {
+          "width": 1280,
+          "height": 720
+        },
+        "instagram": {
+          "width": 1080,
+          "height": 1920
+        },
+        "facebook": {
+          "width": 1080,
+          "height": 1920
+        },
+        "facebook-video": {
+          "width": 1280,
+          "height": 720,
+          "aspectRatio": "16:9"
+        },
+        "facebook-feed": {
+          "width": 1080,
+          "height": 1350,
+          "aspectRatio": "4:5"
+        },
+        "facebook-square": {
+          "width": 1080,
+          "height": 1080,
+          "aspectRatio": "1:1"
+        },
+        "facebook-reels": {
+          "width": 1080,
+          "height": 1920,
+          "aspectRatio": "9:16"
+        },
+        "facebook-link-preview": {
+          "width": 1200,
+          "height": 630,
+          "aspectRatio": "1.91:1"
+        }
       },
       "layout": {
         "imageMode": "cover",
@@ -22,7 +57,11 @@
         "accentColor": "#FFD43B",
         "shadow": true
       },
-      "export": {"format": "jpeg", "quality": 92, "colorSpace": "sRGB"}
+      "export": {
+        "format": "jpeg",
+        "quality": 92,
+        "colorSpace": "sRGB"
+      }
     }
   ]
 }

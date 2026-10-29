@@ -41,7 +41,7 @@ Use `evuedit --help` and `evuedit --tool preset --help` to expose usage, support
 
 **Phase 1 completion check:** a user can install/run the CLI on Linux or macOS, discover the available presets from documentation/help, and apply one to a video into a separate output file.
 
-### Phase 2 — YouTube Shorts and Instagram Reels output (complete)
+### Phase 2 — YouTube Shorts, Instagram Reels, and Facebook Reels output (complete)
 
 - Keep the preset listing (`evuedit --tool preset --list`) and descriptions available.
 - Require portrait input; reject landscape/square input with an actionable invalid-format error instead of cropping or padding it.
@@ -65,14 +65,14 @@ Use `evuedit --help` and `evuedit --tool preset --help` to expose usage, support
 - Support JPEG, PNG, and WebP input/output, with one still image frame per output.
 - Provide `warm`, `cool`, `monochrome`, `vivid`, `soft`, and `neutral` filters with documented FFmpeg mappings.
 - Store image filter definitions in a versioned `image_filters.json` catalog, separate from video presets.
-- Support standard image resize targets (`square`, `portrait`, `story`, `landscape`, `youtube`, and `instagram`), explicit output format conversion, and JPEG/WebP quality control.
+- Support standard image resize targets (`square`, `portrait`, `story`, `landscape`, `youtube`, `instagram`, and Facebook placement sizes `facebook-video`, `facebook-feed`, `facebook-square`, `facebook-reels`, and `facebook-link-preview`; `facebook` aliases Reels), explicit output format conversion, and JPEG/WebP quality control.
 - Write output under `~/evueditout`, reject unsafe paths and existing outputs, and report FFmpeg failures clearly.
 - Add module-specific tests and the `docs/modules/evufilters.md` usage guide.
 - Document examples, filter effects, formats, and common errors.
 
 ### Phase 5 — Thumbnail creation with `evuthumb` (complete)
 
-Create a deterministic thumbnail generator for YouTube and Instagram canvases. The module uses Go, ImageMagick, and versioned JSON layout templates. It renders the source image, gradient, and text as separate layers; it does not use generative AI to redraw the dish or other source subject. Ten templates are available from `templates/`, with imported `street-food` replacing the base catalog entry of the same ID.
+Create a deterministic thumbnail generator for YouTube, Instagram, and all five Facebook placement canvases. The module uses Go, ImageMagick, and versioned JSON layout templates. It renders the source image, gradient, and text as separate layers; it does not use generative AI to redraw the dish or other source subject. Ten templates are available from `templates/`, with imported `street-food` replacing the base catalog entry of the same ID.
 
 Proposed command:
 
@@ -99,7 +99,12 @@ Template catalog shape (one versioned JSON file can contain multiple templates):
       "version": 1,
       "canvas": {
         "youtube": {"width": 1280, "height": 720},
-        "instagram": {"width": 1080, "height": 1920}
+        "instagram": {"width": 1080, "height": 1920},
+        "facebook-video": {"width": 1280, "height": 720, "aspectRatio": "16:9"},
+        "facebook-feed": {"width": 1080, "height": 1350, "aspectRatio": "4:5"},
+        "facebook-square": {"width": 1080, "height": 1080, "aspectRatio": "1:1"},
+        "facebook-reels": {"width": 1080, "height": 1920, "aspectRatio": "9:16"},
+        "facebook-link-preview": {"width": 1200, "height": 630, "aspectRatio": "1.91:1"}
       },
       "layout": {
         "imageMode": "cover",
@@ -122,7 +127,7 @@ Template catalog shape (one versioned JSON file can contain multiple templates):
 
 Planned scope and behavior:
 
-- Accept a still image, template ID, platform (`youtube` or `instagram`), and output filename. Accept headlines through exactly one of `--headline "quoted text"` or `--headlines-file <path>`; the text file is UTF-8 with one headline per line, and blank/whitespace-only lines are ignored.
+- Accept a still image, template ID, platform (`youtube`, `instagram`, or any Facebook placement; `facebook` aliases Reels), and output filename. Accept headlines through exactly one of `--headline "quoted text"` or `--headlines-file <path>`; the text file is UTF-8 with one headline per line, and blank/whitespace-only lines are ignored.
 - Render one image for a single `--headline`. In file mode, render one variation per non-empty line and name outputs from the requested output base with a stable zero-padded sequence (for example, `street-food-001.jpg`, `street-food-002.jpg`). Preflight all headline constraints and output names before rendering so a validation error or existing output does not leave a partial batch.
 - Write generated files under `~/evueditout`; do not overwrite source images or existing outputs.
 - Load templates from a versioned catalog, validate unique IDs, canvas dimensions, supported layout positions, fonts, colors, headline limits, and export settings. Keep template JSON separate from rendering code.
@@ -169,7 +174,7 @@ Proposed behavior:
 
 Decisions to settle while implementing: how to handle different resolutions, frame rates, orientations, and audio presence; whether to expose explicit clip ordering; and which output quality defaults to use. Choose and document safe defaults rather than silently crop or stretch clips.
 
-### Phase 7 — Release and distribution
+### Phase 7 — Release and distribution (complete)
 
 - Build and package versioned binaries for supported Linux and macOS architectures.
 - Install the executable under the user's home directory and create `~/evueditout` during installation.
@@ -177,6 +182,40 @@ Decisions to settle while implementing: how to handle different resolutions, fra
 - Add a release checklist covering clean-machine installation, FFmpeg detection, help output, and representative command runs.
 - Document supported platforms, FFmpeg and ImageMagick requirements, version policy, and known limitations.
 - Document `evuthumb` template and font asset installation.
+
+### Phase 8 — Facebook publishing targets across existing modules (complete)
+
+Add Facebook as a distinct publishing target to video presets and add the supplied Facebook placement formats to image filters and thumbnail templates.
+
+- Extend the `preset` module's documented short-form targets to include Facebook Reels. Keep portrait-input validation and MP4 encoding behavior; this remains a vertical short-form video workflow.
+- Add Facebook image resize targets to `evufilters`: video (1280×720, 16:9), feed (1080×1350, 4:5), square (1080×1080, 1:1), Reels (1080×1920, 9:16), and link preview (1200×630, 1.91:1).
+- Add the same five Facebook canvases to every `evuthumb` template and accept their names with `--platform`.
+- Keep `facebook` as a compatibility alias for `facebook-reels` in image resizing and thumbnail generation.
+- Keep existing `youtube` and `instagram` target names and behavior unchanged.
+- Store dimensions and aspect ratios in the resize map and thumbnail JSON templates; add CLI validation, tests, and module documentation.
+
+### Phase 9 — Animated image-and-text videos with `evumotion` (complete)
+
+Create short template-driven videos from a still image, text, and optional separately supplied subject layer. Templates define the canvas, image crop, text layout, animation IDs, timing, and export settings; users provide content, not arbitrary style values.
+
+Proposed command:
+
+```sh
+evuedit --module evumotion --template food-promo --platform instagram \
+  --file ./dish.jpg --headline "FRESH FROM THE GRILL" --output food-promo.mp4
+```
+
+Planned scope and behavior:
+
+- Start with a single background image, one headline, a template, and a short MP4 output. This version uses a single headline, no audio, an 8-second/30-fps template, and a separate versioned motion JSON catalog.
+- Let a template control crop and safe placement. The image may be panned or zoomed as one layer without requiring AI.
+- Animate text with a small catalog of predictable effects such as fade, slide, and pop. Templates choose effects and timing; the command accepts the actual text.
+- Support independent subject motion when the user supplies a transparent foreground cutout with `--foreground`. A flattened photo cannot move one object independently without a mask or reconstruction of the background.
+- Keep automatic subject extraction and AI background generation optional and later. If added, constrain them to explicit template fields and provide a deterministic path without AI.
+- Target YouTube Shorts, Instagram Reels, and Facebook Reels at 1080×1920, encode a silent H.264/yuv420p MP4 with FFmpeg, and write to `~/evueditout` without overwriting existing files.
+- Add `--help`, template listing, JSON validation, motion/timing validation, rendering tests, optional FFmpeg integration coverage, and `docs/modules/evumotion.md`.
+
+Initial scope decisions: one headline, no audio, and template-selected fade/slide-up/pop text animations plus none/float/slide-up subject animations. Timed script files and audio are later additions.
 
 ## Documentation deliverables
 
@@ -197,3 +236,4 @@ Decisions to settle while implementing: how to handle different resolutions, fra
 - **Interface:** retain the requested `--tool preset` shape initially; consider conventional subcommands later only if they improve the interface without breaking documented usage.
 - **Extensibility:** use a tool registry and a tool interface so each future tool owns its flags, validation, and execution. Shared dispatch remains responsible only for selecting a tool and showing the global tool list.
 - **Short-form output:** Phase 2 targets portrait source footage for Shorts/Reels, keeps the source's portrait dimensions, and encodes a broadly compatible MP4 delivery file. Landscape input is an error; the CLI does not crop or pad it.
+- **Facebook scope:** Phase 8 adds Facebook Reels for video presets and five named Facebook image placements for resizing and thumbnails.

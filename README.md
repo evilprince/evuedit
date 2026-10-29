@@ -10,9 +10,15 @@ Install a prebuilt release on macOS or Linux without installing Go:
 curl -fsSL https://raw.githubusercontent.com/evilprince/evuedit/main/scripts/install-release.sh | sh
 ```
 
+To install a specific release, such as `v0.2.0`, run:
+
+```sh
+curl -fsSL https://raw.githubusercontent.com/evilprince/evuedit/main/scripts/install-release.sh | sh -s -- --version v0.2.0
+```
+
 The installer selects the matching platform build, verifies its checksum, installs to `~/.local/bin/evuedit`, and creates `~/evueditout`. If FFmpeg is missing, it offers to install it through your system package manager. Go is needed only for building from source. See [INSTALL.md](INSTALL.md) for version selection, PATH setup, external tools, source installation, and release publishing.
 
-The prebuilt CLI still uses external media tools: FFmpeg (`ffmpeg` and `ffprobe`) for video presets and image filters, and ImageMagick (`magick`) for thumbnails.
+The prebuilt CLI still uses external media tools: FFmpeg (`ffmpeg` and `ffprobe`) for video presets, image filters, and animated videos, and ImageMagick (`magick`) for thumbnails.
 
 ## Requirements
 
@@ -39,7 +45,7 @@ The preset catalog currently declares Samsung Log input and Rec.709 SDR working 
 
 ### Shorts/Reels input and output
 
-The preset tool is intended for YouTube Shorts and Instagram Reels. Input must be portrait video (`height > width`); landscape and square clips fail with an `invalid format` error. The CLI does not crop, pad, or rotate footage. It preserves the source's portrait dimensions and encodes MP4 with H.264 (`libx264`, `yuv420p`, CRF 20, medium encoder preset) and AAC audio at 128 kb/s. Fast-start metadata is enabled for web playback. The source should already be correctly oriented and framed vertically. `ffprobe` (normally installed with FFmpeg) is required to validate the input dimensions.
+The preset tool is intended for YouTube Shorts, Instagram Reels, and Facebook Reels. Input must be portrait video (`height > width`); landscape and square clips fail with an `invalid format` error. The CLI does not crop, pad, or rotate footage. It preserves the source's portrait dimensions and encodes MP4 with H.264 (`libx264`, `yuv420p`, CRF 20, medium encoder preset) and AAC audio at 128 kb/s. Fast-start metadata is enabled for web playback. The source should already be correctly oriented and framed vertically. `ffprobe` (normally installed with FFmpeg) is required to validate the input dimensions.
 
 `--output` takes a filename only and must end in `.mp4`. Every generated file is written to `~/evueditout/<filename>`; directory components in `--output` are rejected. The CLI creates `~/evueditout` if it does not exist. The source is left unchanged, and an existing output file is never overwritten. FFmpeg displays live encoding progress and diagnostics in the terminal; press Ctrl-C to cancel.
 
@@ -76,11 +82,11 @@ The catalog's top-level `inputProfile` and `workingOutput` apply to the catalog 
 
 ## Image filters
 
-List available image filters with `evuedit --module evufilters --list`. Apply a filter with `evuedit --module evufilters --filter warm --file ./photo.jpg --output photo-warm.jpg`, or generate every filter variation with `evuedit --module evufilters --filter all --file ./photo.jpg --output photo.jpg`. In `all` mode the output is named `photo-<filter>.jpg` for each available filter. Resize with `--resize instagram` (1080×1920) or `--resize youtube` (1280×720), convert with `--format webp`, and set JPEG/WebP quality with `--quality 85`. Supported image formats are JPEG, PNG, and WebP. Image filter definitions are kept in the versioned `image_filters.json` catalog. See the [image filter module guide](docs/modules/evufilters.md) for the catalog structure, effects, formats, and output settings.
+List available image filters with `evuedit --module evufilters --list`. Apply a filter with `evuedit --module evufilters --filter warm --file ./photo.jpg --output photo-warm.jpg`, or generate every filter variation with `evuedit --module evufilters --filter all --file ./photo.jpg --output photo.jpg`. In `all` mode the output is named `photo-<filter>.jpg` for each available filter. Resize with `--resize facebook-video`, `facebook-feed`, `facebook-square`, `facebook-reels`, or `facebook-link-preview` for the named Facebook placements; `--resize facebook` remains an alias for Reels. YouTube and Instagram sizes remain available. Convert with `--format webp`, and set JPEG/WebP quality with `--quality 85`. Supported image formats are JPEG, PNG, and WebP. Image filter definitions are kept in the versioned `image_filters.json` catalog. See the [image filter module guide](docs/modules/evufilters.md) for the catalog structure, effects, formats, and output settings.
 
 ## Thumbnail generation
 
-Create YouTube and Instagram thumbnails from a JSON layout template and a headline with `evuedit --module evuthumb --template street-food --platform youtube --file ./dish.jpg --headline "THE BEST STREET FOOD" --output thumbnail.jpg`. The ten templates in `templates/` are embedded in the CLI. `food-comparison` accepts `--compare-file`, `food-deal` accepts `--price`, and `restaurant-review` accepts `--secondary-text`. To generate multiple headline variations, pass `--headlines-file ./headlines.txt`; each non-empty line creates a numbered output. ImageMagick is required. See the [thumbnail module guide](docs/modules/evuthumb.md) for template settings and layout behavior.
+Create YouTube, Instagram, and Facebook placement covers from a JSON layout template and a headline with `evuedit --module evuthumb --template street-food --platform facebook --file ./dish.jpg --headline "THE BEST STREET FOOD" --output thumbnail.jpg`. Facebook supports video (1280×720), feed (1080×1350), square (1080×1080), Reels (1080×1920), and link preview (1200×630) canvases; `--platform facebook` remains an alias for `facebook-reels`. The ten templates in `templates/` are embedded in the CLI. `food-comparison` accepts `--compare-file`, `food-deal` accepts `--price`, and `restaurant-review` accepts `--secondary-text`. To generate multiple headline variations, pass `--headlines-file ./headlines.txt`; each non-empty line creates a numbered output. ImageMagick is required. See the [thumbnail module guide](docs/modules/evuthumb.md) for template settings and layout behavior.
 
 ## Errors
 
@@ -93,3 +99,7 @@ New editing features should be implemented as separate tools. Implement the `Too
 ## Tests
 
 Run the test suite with `go test ./...`. The test case list and a description of each case are in [TESTING.md](TESTING.md).
+
+## Animated short videos
+
+Create a silent, template-driven vertical video from a still image and headline with `evuedit --module evumotion --template food-promo --platform instagram --file ./dish.jpg --headline "FRESH FROM THE GRILL" --output food-promo.mp4`. Add `--foreground ./dish-cutout.png` to animate a transparent subject layer separately. FFmpeg is required; output is written under `~/evueditout`. See the [evumotion guide](docs/modules/evumotion.md).

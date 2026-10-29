@@ -290,7 +290,7 @@ func (presetTool) Run(args []string, stdout, stderr io.Writer) error {
 		return errors.New("--output must be a filename only; files are written to ~/evueditout")
 	}
 	if strings.ToLower(filepath.Ext(*output)) != ".mp4" {
-		return errors.New("--output must use the .mp4 extension for YouTube Shorts and Instagram Reels")
+		return errors.New("--output must use the .mp4 extension for short-form video (YouTube Shorts, Instagram Reels, or Facebook Reels)")
 	}
 	homeDir, err := os.UserHomeDir()
 	if err != nil {

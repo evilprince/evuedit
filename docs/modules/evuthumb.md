@@ -1,6 +1,6 @@
 # Thumbnail generation with `evuthumb`
 
-`evuthumb` creates a still image for YouTube or Instagram from a source photo, a JSON layout template, and headline text. Rendering is deterministic: the original subject is kept, while cover crop, gradient, accent bar, shadow, and text are drawn by ImageMagick. Generative AI is not required.
+`evuthumb` creates a still image for YouTube, Instagram, or Facebook placements from a source photo, a JSON layout template, and headline text. Rendering is deterministic: the original subject is kept, while cover crop, gradient, accent bar, shadow, and text are drawn by ImageMagick. Generative AI is not required.
 
 ## Requirements
 
@@ -17,7 +17,7 @@ evuedit --module evuthumb --list
 evuedit --module evuthumb --help
 ```
 
-The available templates provide YouTube (1280×720) and Instagram (1080×1920) canvases.
+Every template provides YouTube (1280×720), Instagram (1080×1920), and Facebook placement canvases: `facebook-video` (1280×720, 16:9), `facebook-feed` (1080×1350, 4:5), `facebook-square` (1080×1080, 1:1), `facebook-reels` (1080×1920, 9:16), and `facebook-link-preview` (1200×630, 1.91:1). `--platform facebook` remains an alias for `facebook-reels`.
 
 ## Generate one thumbnail
 
@@ -30,7 +30,7 @@ evuedit --module evuthumb \
   --output street-food.jpg
 ```
 
-The headline can contain spaces when quoted in the shell. Use platform `instagram` for the vertical canvas.
+The headline can contain spaces when quoted in the shell. Use `--platform` with any canvas name above. For example, use `facebook-feed` for a 4:5 feed image.
 
 ## Generate from a headline file
 
@@ -47,7 +47,7 @@ Run:
 ```sh
 evuedit --module evuthumb \
   --template street-food \
-  --platform instagram \
+  --platform facebook \
   --file ./dish.jpg \
   --headlines-file ./headlines.txt \
   --output street-food.jpg

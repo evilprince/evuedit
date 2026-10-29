@@ -14,7 +14,7 @@ sh scripts/test-sample.sh
 
 The script builds a temporary CLI binary, applies `masala-gold` to `examples/testdata/sample-portrait.mp4` as Rec.709 input, and checks for H.264, `yuv420p`, and 720x1280 output. It uses and removes a temporary home/output folder. The fixture source and checksum are recorded in `examples/testdata/README.md`.
 
-The tests use Go's standard library. Preset execution is checked with small fake `ffmpeg` and `ffprobe` executables, so tests do not encode real video or require FFmpeg to be installed. The fake executable tests use a POSIX shell, matching the project's Linux and macOS targets.
+The tests use Go's standard library. Motion and preset execution is checked with small fake `ffmpeg` and `ffprobe` executables, so tests do not encode real video or require FFmpeg to be installed. The fake executable tests use a POSIX shell, matching the project's Linux and macOS targets.
 
 ## CLI dispatch (`main_test.go`)
 
@@ -50,8 +50,8 @@ The tests use Go's standard library. Preset execution is checked with small fake
 | `TestImageFilterHelpAndList` | Confirms module help and `--list` show the available named image effects. |
 | `TestImageFilterCatalogLoadsVersionedDefinitions` | Confirms the embedded JSON catalog loads its filter properties and rejects unsupported versions, duplicate IDs, and missing filter graphs. |
 | `TestImageFilterToolValidatesFilterPathsAndFormats` | Confirms unknown filters, missing required arguments, unsupported formats, and unsafe output paths fail before encoding. |
-| `TestImageFilterToolRunsFFmpegAndDoesNotOverwrite` | Uses fake FFmpeg/ffprobe programs to verify filter graph selection, resize dimensions, explicit WebP conversion and quality, fixed output folder, success reporting, and existing-output protection. |
-| `TestImageResizePresetsIncludePlatformDimensions` | Confirms YouTube and Instagram resize names map to 1280×720 and 1080×1920 respectively. |
+| `TestImageFilterToolRunsFFmpegAndDoesNotOverwrite` | Uses fake FFmpeg/ffprobe programs to verify filter graph selection, Facebook placement resize dimensions, explicit WebP conversion and quality, fixed output folder, success reporting, and existing-output protection. |
+| `TestImageResizePresetsIncludePlatformDimensions` | Confirms YouTube maps to 1280×720 and Instagram/Facebook Reels map to 1080×1920, and the five Facebook image placements map to their named dimensions. |
 | `TestImageFilterAllGeneratesOneNamedOutputPerFilter` | Uses fake FFmpeg/ffprobe programs to confirm `--filter all` runs each filter and writes a distinct suffixed output for each. |
 | `TestImageFilterAllChecksEveryOutputBeforeProcessing` | Confirms an existing destination anywhere in an `all` batch prevents every encoding run before partial output is created. |
 
@@ -59,14 +59,14 @@ The tests use Go's standard library. Preset execution is checked with small fake
 
 | Test case | Purpose |
 | --- | --- |
-| `TestThumbTemplateCatalogValidation` | Confirms all ten JSON template files are embedded, imported `street-food` overrides the base entry, canvas dimensions load, and malformed catalog versions or duplicate IDs are rejected. |
+| `TestThumbTemplateCatalogValidation` | Confirms all ten JSON template files are embedded, imported `street-food` overrides the base entry, YouTube/Instagram/Facebook canvas dimensions load, and malformed catalog versions or duplicate IDs are rejected. |
 | `TestThumbHeadlineWrappingAndBatchNames` | Confirms wrapping preserves all headline words and batch output filenames are numbered deterministically. |
 | `TestThumbToolHelpListAndHeadlineValidation` | Confirms help/template discovery and mutually exclusive headline sources and template word limits. |
 | `TestImportedThumbTemplatesRequireTheirDynamicInputs` | Confirms comparison, deal, and restaurant templates require the second image, price, and subtitle input respectively. |
 | `TestReadThumbHeadlines` | Confirms headline files are read in order, with whitespace trimmed and blank lines ignored. |
-| `TestThumbRenderingInvokesImageMagickLayers` | Uses a fake ImageMagick executable to verify cover sizing, gradient composition, headline rendering, sRGB/JPEG export, and output reporting. |
+| `TestThumbRenderingInvokesImageMagickLayers` | Uses a fake ImageMagick executable to verify Facebook Reels canvas sizing, cover sizing, gradient composition, headline rendering, sRGB/JPEG export, and output reporting. |
 
-For this change, real ImageMagick renders were also run for each of the ten templates. The comparison, deal, and restaurant cases supplied `--compare-file`, `--price`, and `--secondary-text`; each produced a valid 1280×720 sRGB JPEG.
+Real ImageMagick renders were run for each of the ten templates. The comparison, deal, and restaurant cases supplied `--compare-file`, `--price`, and `--secondary-text`; each produced a valid 1280×720 sRGB JPEG. The unit renderer check additionally verifies the Facebook Reels 1080×1920 canvas.
 
 ### Optional real ImageMagick integration check
 
@@ -78,5 +78,14 @@ evuedit --module evuthumb --template street-food --platform youtube \
 magick identify "$HOME/evueditout/thumb-smoke.jpg"
 ```
 
-Expected output is a JPEG with `1280x720` dimensions and sRGB color. Repeat with `--platform instagram` and a distinct output filename to verify the `1080x1920` canvas. This check also catches ImageMagick font lookup differences that the fake executable cannot detect.
+Expected output is a JPEG with `1280x720` dimensions and sRGB color. Repeat with `--platform instagram` or `--platform facebook-reels` and a distinct output filename to verify the `1080x1920` vertical canvas. The `facebook` alias selects the same canvas. Use `facebook-video`, `facebook-feed`, `facebook-square`, or `facebook-link-preview` to check their respective canvases. This check also catches ImageMagick font lookup differences that the fake executable cannot detect.
 
+
+## Motion tool (`motion_test.go`)
+
+| Test case | Purpose |
+| --- | --- |
+| `TestMotionTemplateCatalogValidation` | Confirms the embedded versioned catalog loads its starter template and vertical canvas. |
+| `TestMotionFilterGraphSelectsTemplateAnimations` | Confirms the template-selected headline fade and independent subject float are compiled into the FFmpeg filter graph. |
+| `TestMotionToolRunsFFmpegAndWritesOutput` | Uses fake FFmpeg to verify foreground compositing, animated text, H.264/yuv420p silent MP4 settings, and output location. |
+| `TestMotionToolValidatesArgumentsAndOutput` | Confirms missing arguments, unsupported platforms, directory traversal, and non-MP4 output names fail before processing. |

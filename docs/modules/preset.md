@@ -1,6 +1,6 @@
 # Using color presets
 
-The `preset` tool applies a named color look and creates a Shorts/Reels-ready MP4.
+The `preset` tool applies a named color look and creates a Shorts/Reels-ready MP4 for YouTube Shorts, Instagram Reels, or Facebook Reels.
 
 ## Requirements
 

@@ -18,7 +18,7 @@ func TestThumbTemplateCatalogValidation(t *testing.T) {
 		t.Fatalf("loaded %d templates, want 10", len(catalog.Templates))
 	}
 	item, ok := findThumbTemplate(catalog, "street-food")
-	if !ok || item.Canvas["youtube"] != (thumbCanvas{Width: 1280, Height: 720}) || item.Canvas["instagram"] != (thumbCanvas{Width: 1080, Height: 1920}) || item.Layout.LabelText != "STREET FOOD" {
+	if !ok || item.Canvas["youtube"] != (thumbCanvas{Width: 1280, Height: 720}) || item.Canvas["instagram"] != (thumbCanvas{Width: 1080, Height: 1920}) || item.Canvas["facebook-reels"] != (thumbCanvas{Width: 1080, Height: 1920, AspectRatio: "9:16"}) || item.Canvas["facebook-video"] != (thumbCanvas{Width: 1280, Height: 720, AspectRatio: "16:9"}) || item.Canvas["facebook-feed"] != (thumbCanvas{Width: 1080, Height: 1350, AspectRatio: "4:5"}) || item.Canvas["facebook-square"] != (thumbCanvas{Width: 1080, Height: 1080, AspectRatio: "1:1"}) || item.Canvas["facebook-link-preview"] != (thumbCanvas{Width: 1200, Height: 630, AspectRatio: "1.91:1"}) || item.Layout.LabelText != "STREET FOOD" {
 		t.Fatalf("street-food canvases are incorrect: %+v", item.Canvas)
 	}
 	for _, id := range []string{"cafe-coffee", "dessert", "fine-dining", "food-challenge", "food-comparison", "food-deal", "instagram-cover", "restaurant-review", "street-food", "youtube-review"} {
@@ -133,7 +133,7 @@ func TestThumbRenderingInvokesImageMagickLayers(t *testing.T) {
 	t.Setenv("EVUTHUMB_TEST_ARG_LOG", logPath)
 	t.Setenv("EVU_IMAGEMAGICK_PATH", "")
 	var stdout, stderr bytes.Buffer
-	err := (thumbTool{}).Run([]string{"--template", "street-food", "--platform", "youtube", "--file", input, "--headline", "THE BEST STREET FOOD", "--output", "thumbnail.jpg"}, &stdout, &stderr)
+	err := (thumbTool{}).Run([]string{"--template", "street-food", "--platform", "facebook", "--file", input, "--headline", "THE BEST STREET FOOD", "--output", "thumbnail.jpg"}, &stdout, &stderr)
 	if err != nil {
 		t.Fatalf("thumbnail render error: %v, stderr: %s", err, stderr.String())
 	}
@@ -145,7 +145,7 @@ func TestThumbRenderingInvokesImageMagickLayers(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	for _, expected := range []string{"1280x720^", "-extent", "1280x720", "-compose", "over", "THE BEST", "-quality", "92", "sRGB", output} {
+	for _, expected := range []string{"1080x1920^", "-extent", "1080x1920", "-compose", "over", "THE BEST", "-quality", "92", "sRGB", output} {
 		if !strings.Contains(string(args), expected) {
 			t.Errorf("ImageMagick invocation missing %q: %s", expected, args)
 		}

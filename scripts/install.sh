@@ -52,7 +52,7 @@ if command -v ffmpeg >/dev/null 2>&1 && command -v ffprobe >/dev/null 2>&1; then
 elif [ "$ffmpeg_mode" = install ]; then
 	sh "$project_dir/scripts/install-ffmpeg.sh"
 elif [ "$ffmpeg_mode" = prompt ] && [ -t 0 ]; then
-	printf '%s' 'FFmpeg is required for video presets and image filters. Install it now using your system package manager? [y/N] '
+	printf '%s' 'FFmpeg is required for video presets, image filters, and animated videos. Install it now using your system package manager? [y/N] '
 	read -r answer
 	case "$answer" in
 		y|Y|yes|YES|Yes) sh "$project_dir/scripts/install-ffmpeg.sh" ;;
@@ -67,7 +67,7 @@ if imagemagick_available; then
 elif [ "$imagemagick_mode" = install ]; then
 	sh "$project_dir/scripts/install-imagemagick.sh"
 elif [ "$imagemagick_mode" = prompt ] && [ -t 0 ]; then
-	printf '%s' 'ImageMagick is required by the planned evuthumb module. Install it now using your system package manager? [y/N] '
+	printf '%s' 'ImageMagick is required by the evuthumb module. Install it now using your system package manager? [y/N] '
 	read -r answer
 	case "$answer" in
 		y|Y|yes|YES|Yes) sh "$project_dir/scripts/install-imagemagick.sh" ;;

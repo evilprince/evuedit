@@ -32,12 +32,13 @@ type thumbTool struct{}
 
 func (thumbTool) Name() string { return "evuthumb" }
 func (thumbTool) Description() string {
-	return "create YouTube and Instagram thumbnails from JSON templates"
+	return "create YouTube, Instagram, and Facebook placement images from JSON templates"
 }
 
 type thumbCanvas struct {
-	Width  int `json:"width"`
-	Height int `json:"height"`
+	Width       int    `json:"width"`
+	Height      int    `json:"height"`
+	AspectRatio string `json:"aspectRatio,omitempty"`
 }
 
 type thumbLayout struct {
@@ -151,7 +152,7 @@ func validateThumbTemplate(item thumbTemplate) error {
 	if strings.TrimSpace(item.Description) == "" {
 		return fmt.Errorf("template %q: description is required", item.ID)
 	}
-	for _, platform := range []string{"youtube", "instagram"} {
+	for _, platform := range []string{"youtube", "instagram", "facebook-video", "facebook-feed", "facebook-square", "facebook-reels", "facebook-link-preview"} {
 		canvas, ok := item.Canvas[platform]
 		if !ok || canvas.Width < 1 || canvas.Height < 1 || canvas.Width > 10000 || canvas.Height > 10000 {
 			return fmt.Errorf("template %q: canvas for %s must have width and height between 1 and 10000", item.ID, platform)
@@ -264,11 +265,20 @@ func loadEmbeddedThumbTemplateCatalog() (thumbTemplateCatalog, error) {
 	return catalog, nil
 }
 
+func isThumbPlatform(platform string) bool {
+	switch platform {
+	case "youtube", "instagram", "facebook-video", "facebook-feed", "facebook-square", "facebook-reels", "facebook-link-preview":
+		return true
+	default:
+		return false
+	}
+}
+
 func (thumbTool) Run(args []string, stdout, stderr io.Writer) error {
 	fs := flag.NewFlagSet("evuthumb", flag.ContinueOnError)
 	fs.SetOutput(stderr)
 	templateID := fs.String("template", "", "thumbnail template id")
-	platform := fs.String("platform", "", "target platform: youtube or instagram")
+	platform := fs.String("platform", "", "target placement: youtube, instagram, facebook-video, facebook-feed, facebook-square, facebook-reels, facebook-link-preview (facebook aliases facebook-reels)")
 	input := fs.String("file", "", "source still image")
 	compareInput := fs.String("compare-file", "", "second source image required by food-comparison")
 	headline := fs.String("headline", "", "one headline, for example: \"THE BEST STREET FOOD\"")
@@ -304,8 +314,11 @@ func (thumbTool) Run(args []string, stdout, stderr io.Writer) error {
 	if *templateID == "" || *platform == "" || *input == "" || *output == "" {
 		return errors.New("--template, --platform, --file, and --output are required")
 	}
-	if *platform != "youtube" && *platform != "instagram" {
-		return errors.New("--platform must be youtube or instagram")
+	if *platform == "facebook" {
+		*platform = "facebook-reels"
+	}
+	if !isThumbPlatform(*platform) {
+		return errors.New("--platform must be youtube, instagram, facebook-video, facebook-feed, facebook-square, facebook-reels, or facebook-link-preview (facebook is an alias for facebook-reels)")
 	}
 	template, ok := findThumbTemplate(catalog, *templateID)
 	if !ok {
@@ -956,7 +969,7 @@ func printThumbTemplateList(w io.Writer, catalog thumbTemplateCatalog) {
 }
 
 func printThumbHelp(w io.Writer) {
-	fmt.Fprintln(w, "Usage: evuedit --module evuthumb --template <id> --platform <youtube|instagram> --file <image> (--headline \"text\" | --headlines-file <path>) --output <filename.jpg> [template options]")
+	fmt.Fprintln(w, "Usage: evuedit --module evuthumb --template <id> --platform <youtube|instagram|facebook-video|facebook-feed|facebook-square|facebook-reels|facebook-link-preview> --file <image> (--headline \"text\" | --headlines-file <path>) --output <filename.jpg> [template options]")
 	fmt.Fprintln(w, "Create deterministic image thumbnails from JSON templates. Outputs are written to ~/evueditout.")
 	fmt.Fprintln(w, "Use --list to show templates. Headline files use one headline per non-empty line.")
 	fmt.Fprintln(w, "Headline text wraps and shrinks to fit the template's word and line limits.")
