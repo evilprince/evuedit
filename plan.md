@@ -217,6 +217,68 @@ Planned scope and behavior:
 
 Initial scope decisions: one headline, no audio, and template-selected fade/slide-up/pop text animations plus none/float/slide-up subject animations. Timed script files and audio are later additions.
 
+### Phase 10 — Folder batch processing for existing modules (complete)
+
+Allow image and video modules to apply their selected filter, preset, or template to every supported input file in one folder.
+
+Proposed interface:
+
+```sh
+evuedit --module evufilters --filter masala-glow --input-dir ./photos --output photos
+```
+
+Planned behavior:
+
+- Add `--input-dir` alongside `--file`; require exactly one input mode. Start with direct files in the selected folder and do not recurse into subfolders.
+- Sort input names case-insensitively for predictable processing order. Report unsupported file types rather than silently processing them.
+- Reuse the selected module settings for each file: presets and LUT settings for videos; filter, resize, format, and quality for images; template and headline settings for thumbnails and motion videos.
+- Derive a unique output filename from each input filename plus the selected preset/filter/template ID. Keep all outputs under `~/evueditout` and never overwrite an existing file.
+- Validate the whole batch and preflight destination names before processing. Report per-file failures and a final success/failure summary so one invalid source does not hide the status of the remaining files.
+- For `evuthumb` and `evumotion`, apply the same selected headline to each image in the initial version. Headline-per-image mapping and recursive traversal can be considered later.
+- For video presets, validate each file independently; landscape or square clips remain invalid. For `evujoin`, folder input already represents an ordered set of clips and remains a separate operation.
+- Add CLI help, tests for mixed extensions, stable ordering, naming, collision checks and partial failures, plus module-guide updates for each supported module.
+
+The batch input contract will be shared where practical, while each module retains its own supported extensions, output type, and processing rules.
+
+### Phase 11 — Go processing server and Node.js client (planned)
+
+Expose the existing Go editing modules over a versioned HTTP API so a Node.js application can submit media jobs, follow progress, and retrieve generated files without invoking the CLI as a child process.
+
+Recommended shape:
+
+```text
+Node.js application -> Node client -> HTTP API -> Go processing services -> FFmpeg / ImageMagick
+```
+
+Proposed server command and API surface:
+
+```sh
+evuedit serve --listen 127.0.0.1:8080 --data-dir ./evuedit-server-data
+```
+
+- `GET /v1/health` — readiness and required media tool availability.
+- `GET /v1/capabilities` — supported modules, options, presets, filters, templates, and platform formats.
+- `POST /v1/jobs` — submit one module operation or a batch with media uploaded as multipart/form-data and module options as constrained JSON fields.
+- `GET /v1/jobs/{id}` — read queued/running/succeeded/failed/canceled status and progress when available.
+- `GET /v1/jobs/{id}/events` — stream ordered job lifecycle and progress events over Server-Sent Events (SSE).
+- `GET /v1/jobs/{id}/result` — download the generated file, or a ZIP for a multi-file result.
+- `DELETE /v1/jobs/{id}` — request cancellation for a running job.
+
+Implementation phases within Phase 11:
+
+1. Extract module processing and validation into Go service functions shared by the current CLI and HTTP handlers. Keep CLI flags and existing behavior backward-compatible; the server must call these functions directly rather than start `evuedit` subprocesses.
+2. Give every server job a private work directory and generated output names. Stream uploads to disk with size limits. Do not accept arbitrary server file paths, output paths, FFmpeg arguments, ImageMagick commands, or raw filter graphs from API callers.
+3. Run media processing asynchronously through a bounded worker queue. Return `202 Accepted` and a job ID; expose stable job states and useful progress/errors. Enforce per-job timeouts, cancellation, concurrency limits, and retention cleanup.
+4. Add a JavaScript client package that supports Node.js 20 and newer and uses Node's built-in `fetch` where possible. Keep the API usable from plain JavaScript; provide TypeScript declarations and examples as an additional convenience. Promise-based methods are the primary interface, and callback forms should also be supported for core operations such as job submission, waiting for completion, cancellation, and result download. Make the job handle event-based, exposing `progress`, `completed`, `failed`, and `canceled` events; connect it to the SSE endpoint and reconnect safely using event IDs. Provide a polling fallback and a `wait()` Promise helper for environments where streaming is unavailable or not desired.
+5. Secure the service for its deployment boundary: bind to localhost by default; require bearer-token authentication and TLS at a trusted reverse proxy when reachable over a network. Add request-size limits and avoid logging headline text, credentials, or uploaded media contents.
+6. Document server installation/configuration, API request and response schemas, Node.js 20+ requirement, plain JavaScript and TypeScript usage, Promise and callback examples, Node client event names and payloads, SSE reconnection and polling fallback, deployment, failure modes, and media-tool prerequisites. Add API handler, event ordering/reconnection, job lifecycle, security-boundary, and client tests, including callback and Promise behavior.
+
+Recommended first deployment is the Go server on the same host or private network as the Node.js app, with multipart uploads and HTTP result downloads. This keeps the API portable and avoids granting the Go process access to arbitrary paths on the Node server. A shared-storage mode can be added later if duplicate large-file transfers become costly.
+
+The Node.js integration should feel event-based even though it uses standard HTTP: submit the job over HTTP, consume progress and terminal events over SSE, and fall back to status polling when necessary. WebSockets are not required for the initial version because job updates flow from Go to Node; they can be considered later if interactive two-way control is needed.
+
+Initial API decisions: use in-memory job state for the first server release and document that active job tracking resets on restart; keep completed media in the configured data directory only for a documented retention period. Add persistent job metadata and external queue/storage integration only if restart recovery or multi-instance scaling becomes a requirement. Keep video/audio inclusion specific to each module: for example, `evumotion` currently produces silent videos.
+
 ## Documentation deliverables
 
 - `README.md`: project overview, prerequisites, installation, quick start, and links to detailed usage.

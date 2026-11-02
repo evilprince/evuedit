@@ -101,6 +101,9 @@ func loadMotionCatalog() (motionCatalog, error) {
 }
 
 func (motionTool) Run(args []string, stdout, stderr io.Writer) error {
+	if handled, err := runMotionFolderBatch(args, stdout, stderr); handled {
+		return err
+	}
 	fs := flag.NewFlagSet("evumotion", flag.ContinueOnError)
 	fs.SetOutput(stderr)
 	templateID := fs.String("template", "", "motion template id")
@@ -286,6 +289,9 @@ func motionFilterGraph(t motionTemplate, textFile string, hasForeground bool) st
 }
 func printMotionHelp(w io.Writer) {
 	fmt.Fprintln(w, "Usage: evuedit --module evumotion --template <id> --platform <youtube|instagram|facebook> --file <image> [--foreground <transparent-subject.png>] --headline \"text\" --output <video.mp4>")
+	fmt.Fprintln(w, "       evuedit --module evumotion --template <id> --platform <platform> --input-dir <folder> [--foreground <transparent-subject.png>] --headline \"text\" --output <video.mp4>")
 	fmt.Fprintln(w, "Create a silent portrait MP4 using a built-in template. Output is written to ~/evueditout.")
 	fmt.Fprintln(w, "Use --list to show templates. A transparent foreground image enables separate subject motion.")
+	fmt.Fprintln(w, "Use --input-dir <folder> to create one video per supported image with the same settings.")
+	fmt.Fprintln(w, "Batch outputs are named from each input image and template ID.")
 }

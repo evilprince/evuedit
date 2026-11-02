@@ -155,6 +155,9 @@ func loadEmbeddedImageFilters() ([]imageFilter, error) {
 }
 
 func (imageFilterTool) Run(args []string, stdout, stderr io.Writer) error {
+	if handled, err := runImageFilterFolderBatch(args, stdout, stderr); handled {
+		return err
+	}
 	filters, err := loadEmbeddedImageFilters()
 	if err != nil {
 		return err
@@ -392,10 +395,13 @@ func printImageFilterList(w io.Writer, filters []imageFilter) {
 
 func printImageFilterHelp(w io.Writer) {
 	fmt.Fprintln(w, "Usage: evuedit --module evufilters --filter <name|all> --file <inputImage> --output <outputImage>")
+	fmt.Fprintln(w, "       evuedit --module evufilters --filter <name|all> --input-dir <folder> --output <outputImage>")
 	fmt.Fprintln(w, "Apply a named filter to a still image. Output is written to ~/evueditout.")
 	fmt.Fprintln(w, "Supported formats: JPEG, PNG, and WebP. Without --resize, output preserves the image dimensions.")
 	fmt.Fprintln(w, "Resize presets: square (1080x1080), portrait (1080x1350), story/instagram/facebook-reels (1080x1920), landscape (1920x1080), youtube/facebook-video (1280x720), facebook-feed (1080x1350), facebook-square (1080x1080), facebook-link-preview (1200x630); facebook aliases facebook-reels.")
 	fmt.Fprintln(w, "--format selects jpg, png, or webp. --quality sets JPEG/WebP quality from 1 to 100; PNG is lossless.")
+	fmt.Fprintln(w, "Use --input-dir <folder> to apply the same filter and resize/format settings to supported images.")
+	fmt.Fprintln(w, "Batch outputs use each input filename plus the selected filter name.")
 	fmt.Fprintln(w, "Use --list to list the available filters.")
 	fmt.Fprintln(w, "With --filter all, --output is a filename base; outputs are named <base>-<filter>.<ext>.")
 	fmt.Fprintln(w)

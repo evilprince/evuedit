@@ -89,3 +89,14 @@ Expected output is a JPEG with `1280x720` dimensions and sRGB color. Repeat with
 | `TestMotionFilterGraphSelectsTemplateAnimations` | Confirms the template-selected headline fade and independent subject float are compiled into the FFmpeg filter graph. |
 | `TestMotionToolRunsFFmpegAndWritesOutput` | Uses fake FFmpeg to verify foreground compositing, animated text, H.264/yuv420p silent MP4 settings, and output location. |
 | `TestMotionToolValidatesArgumentsAndOutput` | Confirms missing arguments, unsupported platforms, directory traversal, and non-MP4 output names fail before processing. |
+
+## Folder batch processing (`batch_test.go` and module tests)
+
+| Test case | Purpose |
+| --- | --- |
+| `TestFolderBatchSortsFilesSkipsUnsupportedAndContinuesFailures` | Confirms direct-file discovery, case-insensitive ordering, unsupported-file reporting, and continued processing after a per-file failure. |
+| `TestFolderBatchPreflightsAllOutputsAndRejectsMixedInputModes` | Confirms duplicate derived output names and simultaneous `--file`/`--input-dir` are rejected before processing. |
+| `TestPresetFolderBatchAppliesPresetToEachVideo` | Uses fake FFmpeg/ffprobe tools to verify preset reuse, video ordering, output naming, and unsupported-file reporting. |
+| `TestImageFilterFolderBatchCreatesStableNames` | Uses fake FFmpeg/ffprobe tools to verify filter reuse, image ordering, output naming, and skipped files. |
+| `TestThumbFolderBatchAppliesTemplateAndHeadline` | Uses fake ImageMagick to verify one template/headline is applied to each image with source-based names. |
+| `TestMotionFolderBatchCreatesOneVideoPerImage` | Uses fake FFmpeg to verify one same-template video is generated per still image. |

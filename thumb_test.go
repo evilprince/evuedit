@@ -154,3 +154,42 @@ func TestThumbRenderingInvokesImageMagickLayers(t *testing.T) {
 		t.Errorf("success output missing output path: %s", stdout.String())
 	}
 }
+
+func TestThumbFolderBatchAppliesTemplateAndHeadline(t *testing.T) {
+	// Folder thumbnail mode should reuse the chosen template/headline and name each output from its source image.
+	dir := t.TempDir()
+	folder := filepath.Join(dir, "photos")
+	if err := os.Mkdir(folder, 0700); err != nil {
+		t.Fatal(err)
+	}
+	for _, name := range []string{"B.png", "a.jpg", "readme.txt"} {
+		if err := os.WriteFile(filepath.Join(folder, name), []byte("photo"), 0600); err != nil {
+			t.Fatal(err)
+		}
+	}
+	bin := filepath.Join(dir, "bin")
+	if err := os.Mkdir(bin, 0700); err != nil {
+		t.Fatal(err)
+	}
+	magick := "#!/bin/sh\nif [ \"$1\" = \"-version\" ]; then echo 'ImageMagick 7 fake'; exit 0; fi\nfor arg do last=\"$arg\"; if [ \"$arg\" = \"info:\" ]; then printf '300 100'; exit 0; fi; done\n: > \"$last\"\n"
+	if err := os.WriteFile(filepath.Join(bin, "magick"), []byte(magick), 0700); err != nil {
+		t.Fatal(err)
+	}
+	home := filepath.Join(dir, "home")
+	t.Setenv("PATH", bin)
+	t.Setenv("HOME", home)
+	t.Setenv("EVU_IMAGEMAGICK_PATH", "")
+	var stdout, stderr bytes.Buffer
+	err := (thumbTool{}).Run([]string{"--template", "street-food", "--platform", "instagram", "--input-dir", folder, "--headline", "BEST FOOD", "--output", "unused.jpg"}, &stdout, &stderr)
+	if err != nil {
+		t.Fatalf("folder thumbnail returned %v: %s", err, stderr.String())
+	}
+	for _, name := range []string{"a-street-food.jpg", "B-street-food.jpg"} {
+		if _, err := os.Stat(filepath.Join(home, "evueditout", name)); err != nil {
+			t.Errorf("expected thumbnail %s: %v", name, err)
+		}
+	}
+	if !strings.Contains(stdout.String(), "2 succeeded, 0 failed, 1 unsupported") {
+		t.Fatalf("batch summary missing: %s", stdout.String())
+	}
+}

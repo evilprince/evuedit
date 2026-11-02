@@ -91,3 +91,41 @@ func TestMotionToolValidatesArgumentsAndOutput(t *testing.T) {
 		}
 	}
 }
+
+func TestMotionFolderBatchCreatesOneVideoPerImage(t *testing.T) {
+	// Folder motion mode should use the same template/headline for every still and produce source-derived MP4 names.
+	dir := t.TempDir()
+	folder := filepath.Join(dir, "photos")
+	if err := os.Mkdir(folder, 0700); err != nil {
+		t.Fatal(err)
+	}
+	for _, name := range []string{"z.png", "a.jpg", "notes.txt"} {
+		if err := os.WriteFile(filepath.Join(folder, name), []byte("image"), 0600); err != nil {
+			t.Fatal(err)
+		}
+	}
+	bin := filepath.Join(dir, "bin")
+	if err := os.Mkdir(bin, 0700); err != nil {
+		t.Fatal(err)
+	}
+	ffmpeg := "#!/bin/sh\nfor last do :; done\nprintf video > \"$last\"\n"
+	if err := os.WriteFile(filepath.Join(bin, "ffmpeg"), []byte(ffmpeg), 0700); err != nil {
+		t.Fatal(err)
+	}
+	home := filepath.Join(dir, "home")
+	t.Setenv("PATH", bin)
+	t.Setenv("HOME", home)
+	var stdout, stderr bytes.Buffer
+	err := (motionTool{}).Run([]string{"--template", "food-promo", "--platform", "facebook", "--input-dir", folder, "--headline", "HOT FOOD", "--output", "unused.mp4"}, &stdout, &stderr)
+	if err != nil {
+		t.Fatalf("folder motion returned %v: %s", err, stderr.String())
+	}
+	for _, name := range []string{"a-food-promo.mp4", "z-food-promo.mp4"} {
+		if _, err := os.Stat(filepath.Join(home, "evueditout", name)); err != nil {
+			t.Errorf("expected motion video %s: %v", name, err)
+		}
+	}
+	if !strings.Contains(stdout.String(), "2 succeeded, 0 failed, 1 unsupported") {
+		t.Fatalf("batch summary missing: %s", stdout.String())
+	}
+}

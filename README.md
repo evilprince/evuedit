@@ -16,7 +16,7 @@ To install a specific release, such as `v0.2.0`, run:
 curl -fsSL https://raw.githubusercontent.com/evilprince/evuedit/main/scripts/install-release.sh | sh -s -- --version v0.2.0
 ```
 
-The installer selects the matching platform build, verifies its checksum, installs to `~/.local/bin/evuedit`, and creates `~/evueditout`. If FFmpeg is missing, it offers to install it through your system package manager. Go is needed only for building from source. See [INSTALL.md](INSTALL.md) for version selection, PATH setup, external tools, source installation, and release publishing.
+The installer selects the matching platform build, verifies its checksum, installs to `~/.local/bin/evuedit`, and creates `~/evueditout`. If FFmpeg or ImageMagick is missing, it offers to install each through your system package manager. Go is needed only for building from source. See [INSTALL.md](INSTALL.md) for version selection, dependency installation options, PATH setup, source installation, and release publishing.
 
 The prebuilt CLI still uses external media tools: FFmpeg (`ffmpeg` and `ffprobe`) for video presets, image filters, and animated videos, and ImageMagick (`magick`) for thumbnails.
 
@@ -103,3 +103,7 @@ Run the test suite with `go test ./...`. The test case list and a description of
 ## Animated short videos
 
 Create a silent, template-driven vertical video from a still image and headline with `evuedit --module evumotion --template food-promo --platform instagram --file ./dish.jpg --headline "FRESH FROM THE GRILL" --output food-promo.mp4`. Add `--foreground ./dish-cutout.png` to animate a transparent subject layer separately. FFmpeg is required; output is written under `~/evueditout`. See the [evumotion guide](docs/modules/evumotion.md).
+
+## Folder batch processing
+
+Image and video modules accept `--input-dir` to apply the same filter, preset, or template to every supported file directly in a folder. For example, `evuedit --module evufilters --filter masala-glow --input-dir ./photos --output photos.jpg`. Inputs are sorted, subfolders are not traversed, unsupported files are reported, output collisions are checked before processing, and per-file failures do not stop the rest of the batch. See the individual module guides for accepted formats and output names.

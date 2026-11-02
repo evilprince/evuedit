@@ -86,3 +86,14 @@ The color properties and preset tags live in [`presets.json`](../../presets.json
 
 Each preset in [`presets.json`](../../presets.json) has an ID, description, tags, `exposureEV`, `contrast`, `saturation`, `highlights`, `shadows`, `warmth`, and `lutIntensity` values. Exposure is measured in stops. Contrast and saturation are multipliers. Highlights, shadows, and warmth use a normalized `-1.0` to `1.0` range. The Samsung Log technical LUT is applied before these creative adjustments. `lutIntensity` is reserved for creative LUT blending and must remain `0.0` until that feature is supported.
 
+
+## Process a folder of videos
+
+Use `--input-dir` in place of `--file` to apply the same preset, input-profile override, and LUT to every supported video directly inside a folder:
+
+```sh
+evuedit --module preset --apply masala-gold --profile-lut ./samsung-log-to-rec709.cube \
+  --input-dir ./clips --output graded.mp4
+```
+
+The CLI processes `.mp4`, `.mov`, `.m4v`, and `.mkv` files in case-insensitive alphabetical order. It does not recurse into subfolders. Unsupported file types are reported and skipped. Each output is named `<input-stem>-<preset-id>.mp4` under `~/evueditout`. Every destination is checked before processing starts; collisions or existing files stop the batch before any video is encoded. A file that fails validation or encoding is reported, and processing continues with the remaining videos.

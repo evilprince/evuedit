@@ -211,6 +211,9 @@ func validatePreset(item colorPreset) error {
 }
 
 func (presetTool) Run(args []string, stdout, stderr io.Writer) error {
+	if handled, err := runPresetFolderBatch(args, stdout, stderr); handled {
+		return err
+	}
 	fs := flag.NewFlagSet("preset", flag.ContinueOnError)
 	fs.SetOutput(stderr)
 	apply := fs.String("apply", "", "preset id to apply")
@@ -535,9 +538,12 @@ func printPresetHelp(w io.Writer) {
 	catalog, err := loadPresetCatalog()
 	useCases, useCaseErr := loadUseCaseCatalog()
 	fmt.Fprintln(w, "Usage: evuedit --module presets --apply <presetName> --file <inputFile> --output <outputFile.mp4> [--input-profile <profile>] [--profile-lut <file>]")
+	fmt.Fprintln(w, "       evuedit --module preset --apply <presetName> --input-dir <folder> --output <outputFile.mp4> [--input-profile <profile>] [--profile-lut <file>]")
 	fmt.Fprintln(w, "       evuedit --tool preset --apply <presetName> --file <inputFile> --output <outputFile.mp4> [--input-profile <profile>] [--profile-lut <file>]")
 	fmt.Fprintln(w, "Apply a color preset and encode vertical Shorts/Reels video (H.264/AAC MP4).")
 	fmt.Fprintln(w, "Input must be portrait (vertical); landscape and square videos are rejected.")
+	fmt.Fprintln(w, "Use --input-dir <folder> to apply the same preset to supported videos in one folder.")
+	fmt.Fprintln(w, "Batch output names are derived from each input filename and preset ID.")
 	fmt.Fprintln(w, "Use --list to see preset names and descriptions.")
 	fmt.Fprintln(w, "Use --list-use-cases or --use-case <id> to find presets by use case.")
 	if err != nil {

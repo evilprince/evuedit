@@ -139,3 +139,14 @@ Property-based entry example:
 }
 ```
 
+
+## Process a folder of images
+
+Replace `--file` with `--input-dir` to apply the same filter, resize, format, and quality settings to supported images in one folder:
+
+```sh
+evuedit --module evufilters --filter masala-glow --resize facebook-feed \
+  --input-dir ./photos --output filtered.jpg
+```
+
+The CLI processes `.jpg`, `.jpeg`, `.png`, and `.webp` files directly inside the folder, in case-insensitive alphabetical order. It does not recurse. Unsupported regular files are reported and skipped. A named filter produces `<input-stem>-<filter-id>.<ext>`; with `--filter all`, each image produces one output per filter, named `<input-stem>-<filter-id>.<ext>`. `--output` supplies the output extension or works with `--format`; its basename is not used in folder mode. Outputs are preflighted before encoding. If one input fails, later images are still processed and the final summary reports the failures.

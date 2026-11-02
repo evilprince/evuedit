@@ -285,3 +285,53 @@ func TestImageFilterToolRunsFFmpegAndDoesNotOverwrite(t *testing.T) {
 		t.Fatalf("existing output error = %v", err)
 	}
 }
+
+func TestImageFilterFolderBatchCreatesStableNames(t *testing.T) {
+	// The same selected filter should run on supported images in stable order and leave unsupported files untouched.
+	dir := t.TempDir()
+	folder := filepath.Join(dir, "photos")
+	if err := os.Mkdir(folder, 0700); err != nil {
+		t.Fatal(err)
+	}
+	for _, name := range []string{"B.png", "a.jpg", "notes.txt"} {
+		if err := os.WriteFile(filepath.Join(folder, name), []byte("source"), 0600); err != nil {
+			t.Fatal(err)
+		}
+	}
+	home := filepath.Join(dir, "home")
+	bin := filepath.Join(dir, "bin")
+	if err := os.Mkdir(bin, 0700); err != nil {
+		t.Fatal(err)
+	}
+	if err := os.WriteFile(filepath.Join(bin, "ffprobe"), []byte("#!/bin/sh\nprintf '640x480\\n'\n"), 0700); err != nil {
+		t.Fatal(err)
+	}
+	log := filepath.Join(dir, "args.log")
+	ffmpeg := "#!/bin/sh\nfor arg do printf '%s\\n' \"$arg\" >> \"$BATCH_ARG_LOG\"; last=\"$arg\"; done\n: > \"$last\"\n"
+	if err := os.WriteFile(filepath.Join(bin, "ffmpeg"), []byte(ffmpeg), 0700); err != nil {
+		t.Fatal(err)
+	}
+	t.Setenv("PATH", bin)
+	t.Setenv("HOME", home)
+	t.Setenv("BATCH_ARG_LOG", log)
+	var stdout, stderr bytes.Buffer
+	err := (imageFilterTool{}).Run([]string{"--filter", "warm", "--input-dir", folder, "--output", "all.jpg"}, &stdout, &stderr)
+	if err != nil {
+		t.Fatalf("folder filter returned %v: %s", err, stderr.String())
+	}
+	for _, name := range []string{"a-warm.jpg", "B-warm.jpg"} {
+		if _, err := os.Stat(filepath.Join(home, "evueditout", name)); err != nil {
+			t.Errorf("expected output %s: %v", name, err)
+		}
+	}
+	if !strings.Contains(stdout.String(), "2 succeeded, 0 failed, 1 unsupported") || !strings.Contains(stderr.String(), `Skipping unsupported file "notes.txt"`) {
+		t.Fatalf("unexpected batch report: %s %s", stdout.String(), stderr.String())
+	}
+	logged, err := os.ReadFile(log)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if strings.Index(string(logged), "a.jpg") > strings.Index(string(logged), "B.png") {
+		t.Fatalf("input processing order is not stable: %s", logged)
+	}
+}

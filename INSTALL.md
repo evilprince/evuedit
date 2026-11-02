@@ -16,10 +16,10 @@ To install a specific release, pass its tag to the installer:
 curl -fsSL https://raw.githubusercontent.com/evilprince/evuedit/main/scripts/install-release.sh | sh -s -- --version v0.2.0
 ```
 
-The installer downloads the matching macOS or Linux binary, checks its SHA-256 checksum, installs it to `~/.local/bin/evuedit`, and creates `~/evueditout` for generated files. If FFmpeg is missing, the installer offers to install it. Package installation may ask for your administrator password. To install FFmpeg without a prompt, use `--with-ffmpeg`; to skip the prompt, use `--without-ffmpeg`:
+The installer downloads the matching macOS or Linux binary, checks its SHA-256 checksum, installs it to `~/.local/bin/evuedit`, and creates `~/evueditout` for generated files. If FFmpeg or ImageMagick is missing, it offers to install each using your system package manager. Package installation may ask for your administrator password. Use `--with-ffmpeg` or `--with-imagemagick` to install a missing dependency without a prompt; use `--without-ffmpeg` or `--without-imagemagick` to skip its prompt. To install both without prompts:
 
 ```sh
-curl -fsSL https://raw.githubusercontent.com/evilprince/evuedit/main/scripts/install-release.sh | sh -s -- --with-ffmpeg
+curl -fsSL https://raw.githubusercontent.com/evilprince/evuedit/main/scripts/install-release.sh | sh -s -- --with-ffmpeg --with-imagemagick
 ```
 
 Go is not needed to run a prebuilt release. It is needed only if you build evuedit from source. If `~/.local/bin` is not already on your `PATH`, add this line to your shell startup file (`~/.zshrc` on the default macOS shell, or `~/.bashrc` on many Linux systems), then open a new terminal:
@@ -39,9 +39,9 @@ evuedit --help
 The evuedit executable is self-contained, but media processing uses these separate programs:
 
 - FFmpeg, including `ffmpeg` and `ffprobe`, for video presets, image filters, and animated videos.
-- ImageMagick, with the `magick` command, for thumbnail generation.
+- ImageMagick, with the `magick` command, for thumbnail generation. The release installer can offer to install it or install it directly with `--with-imagemagick`.
 
-The installer can offer to install FFmpeg. ImageMagick is still installed separately for `evuthumb`; install it with your system package manager, or use `scripts/install-imagemagick.sh` from a source checkout.
+The release installer can offer to install FFmpeg and ImageMagick. The dependency scripts are also available from a source checkout.
 
 ## Install from source
 

@@ -317,3 +317,58 @@ func catalogForTest(t *testing.T) presetCatalog {
 	}
 	return catalog
 }
+
+func TestPresetFolderBatchAppliesPresetToEachVideo(t *testing.T) {
+	// Folder mode should reuse the selected preset/LUT, sort videos, and derive a distinct output name per source.
+	dir := t.TempDir()
+	folder := filepath.Join(dir, "clips")
+	if err := os.Mkdir(folder, 0700); err != nil {
+		t.Fatal(err)
+	}
+	for _, name := range []string{"take-b.mov", "take-a.mp4", "notes.txt"} {
+		if err := os.WriteFile(filepath.Join(folder, name), []byte("video"), 0600); err != nil {
+			t.Fatal(err)
+		}
+	}
+	lut := filepath.Join(dir, "profile.cube")
+	if err := os.WriteFile(lut, []byte("LUT_3D_SIZE 2\n"), 0600); err != nil {
+		t.Fatal(err)
+	}
+	home := filepath.Join(dir, "home")
+	bin := filepath.Join(dir, "bin")
+	if err := os.Mkdir(bin, 0700); err != nil {
+		t.Fatal(err)
+	}
+	ffprobe := "#!/bin/sh\nprintf '1080x1920\\n'\n"
+	if err := os.WriteFile(filepath.Join(bin, "ffprobe"), []byte(ffprobe), 0700); err != nil {
+		t.Fatal(err)
+	}
+	log := filepath.Join(dir, "args.log")
+	ffmpeg := "#!/bin/sh\nfor arg do printf '%s\\n' \"$arg\" >> \"$BATCH_PRESET_LOG\"; last=\"$arg\"; done\n: > \"$last\"\n"
+	if err := os.WriteFile(filepath.Join(bin, "ffmpeg"), []byte(ffmpeg), 0700); err != nil {
+		t.Fatal(err)
+	}
+	t.Setenv("PATH", bin)
+	t.Setenv("HOME", home)
+	t.Setenv("BATCH_PRESET_LOG", log)
+	var stdout, stderr bytes.Buffer
+	err := (presetTool{}).Run([]string{"--apply", "masala-gold", "--profile-lut", lut, "--input-dir", folder, "--output", "unused.mp4"}, &stdout, &stderr)
+	if err != nil {
+		t.Fatalf("folder preset returned %v: %s", err, stderr.String())
+	}
+	for _, name := range []string{"take-a-masala-gold.mp4", "take-b-masala-gold.mp4"} {
+		if _, err := os.Stat(filepath.Join(home, "evueditout", name)); err != nil {
+			t.Errorf("expected output %s: %v", name, err)
+		}
+	}
+	if !strings.Contains(stdout.String(), "2 succeeded, 0 failed, 1 unsupported") {
+		t.Fatalf("batch summary missing: %s", stdout.String())
+	}
+	logged, err := os.ReadFile(log)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if strings.Index(string(logged), "take-a.mp4") > strings.Index(string(logged), "take-b.mov") {
+		t.Fatalf("videos were not processed alphabetically: %s", logged)
+	}
+}

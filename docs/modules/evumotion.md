@@ -52,3 +52,14 @@ The `food-promo` template applies a gentle float to the cutout. The template, no
 - The source still is not modified. Foreground cutouts must be PNG or WebP to preserve transparency.
 - The template catalog is embedded from [`motion_templates.json`](../../motion_templates.json). Rebuild the executable after changing the catalog.
 - Errors identify unknown templates/platforms, unsupported image types, missing files or FFmpeg, invalid output names, and FFmpeg rendering failures.
+
+## Create videos from a folder of images
+
+Use `--input-dir` instead of `--file` to create one video per supported image with the same template, headline, optional foreground cutout, and platform:
+
+```sh
+evuedit --module evumotion --template food-promo --platform instagram \
+  --input-dir ./photos --headline "FRESH FROM THE GRILL" --output promos.mp4
+```
+
+JPEG, PNG, and WebP files directly in the folder are processed in case-insensitive alphabetical order. Subfolders are not traversed; unsupported regular files are reported and skipped. Outputs are named `<input-stem>-<template-id>.mp4`. The same optional `--foreground` cutout is applied to each image. The output names are preflighted before rendering; collisions or existing files stop the batch before processing. If a render fails, the module reports it and continues with remaining inputs.

@@ -275,6 +275,9 @@ func isThumbPlatform(platform string) bool {
 }
 
 func (thumbTool) Run(args []string, stdout, stderr io.Writer) error {
+	if handled, err := runThumbFolderBatch(args, stdout, stderr); handled {
+		return err
+	}
 	fs := flag.NewFlagSet("evuthumb", flag.ContinueOnError)
 	fs.SetOutput(stderr)
 	templateID := fs.String("template", "", "thumbnail template id")
@@ -970,8 +973,11 @@ func printThumbTemplateList(w io.Writer, catalog thumbTemplateCatalog) {
 
 func printThumbHelp(w io.Writer) {
 	fmt.Fprintln(w, "Usage: evuedit --module evuthumb --template <id> --platform <youtube|instagram|facebook-video|facebook-feed|facebook-square|facebook-reels|facebook-link-preview> --file <image> (--headline \"text\" | --headlines-file <path>) --output <filename.jpg> [template options]")
+	fmt.Fprintln(w, "       evuedit --module evuthumb --template <id> --platform <platform> --input-dir <folder> (--headline \"text\" | --headlines-file <path>) --output <filename.jpg> [template options]")
 	fmt.Fprintln(w, "Create deterministic image thumbnails from JSON templates. Outputs are written to ~/evueditout.")
 	fmt.Fprintln(w, "Use --list to show templates. Headline files use one headline per non-empty line.")
+	fmt.Fprintln(w, "Use --input-dir <folder> to apply the same template and headline(s) to supported images.")
+	fmt.Fprintln(w, "Batch outputs are named from each input image and template ID.")
 	fmt.Fprintln(w, "Headline text wraps and shrinks to fit the template's word and line limits.")
 	fmt.Fprintln(w, "Template options: --compare-file <image> (food-comparison), --price <text> (food-deal), --secondary-text <text> (restaurant-review).")
 	fmt.Fprintln(w)

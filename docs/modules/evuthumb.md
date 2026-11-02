@@ -96,3 +96,14 @@ The initial template requests the `sans-serif` font. The CLI first resolves that
 Output is always written under `~/evueditout`; `--output` must be a JPEG filename only. The CLI creates the directory when needed. It leaves the input unchanged and rejects existing output files and input/output collisions.
 
 The module reports errors for unknown templates or platforms, unsupported input formats, invalid headline sources, too many words, headlines that cannot fit, unavailable fonts, missing or failed ImageMagick commands, and existing outputs. For a nonstandard ImageMagick installation, set `EVU_IMAGEMAGICK_PATH` to the executable path.
+
+## Create thumbnails from a folder
+
+Use `--input-dir` instead of `--file` to apply the same template, platform, headline, and optional template inputs to each supported image:
+
+```sh
+evuedit --module evuthumb --template street-food --platform instagram \
+  --input-dir ./dish-photos --headline "BEST STREET FOOD" --output thumbnails.jpg
+```
+
+Supported direct inputs are JPEG, PNG, and WebP; subfolders are not traversed. Files are processed in case-insensitive alphabetical order, and unsupported regular files are reported and skipped. Each image produces `<input-stem>-<template-id>.jpg`. When using `--headlines-file`, each image produces the template's numbered headline variations, for example `dish-street-food-001.jpg`. The same headline list is reused for every input image. All output names are checked before rendering; a collision or existing file stops the batch before any thumbnail is created. Rendering failures are reported per file while later images continue.

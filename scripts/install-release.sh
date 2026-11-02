@@ -5,6 +5,7 @@ repo='evilprince/evuedit'
 install_dir=${EVUEDIT_INSTALL_DIR:-"${HOME}/.local/bin"}
 version=${EVUEDIT_VERSION:-latest}
 ffmpeg_mode=prompt
+imagemagick_mode=prompt
 case "$0" in
 	sh|-sh|bash|-bash) script_dir= ;;
 	*) script_dir=$(CDPATH= cd -- "$(dirname -- "$0")" 2>/dev/null && pwd || true) ;;
@@ -14,17 +15,20 @@ usage() {
 	cat <<'EOF'
 Install the prebuilt evuedit CLI from GitHub Releases.
 
-Usage: scripts/install-release.sh [--version latest|TAG] [--install-dir PATH] [--with-ffmpeg | --without-ffmpeg]
+Usage: scripts/install-release.sh [--version latest|TAG] [--install-dir PATH]
+       [--with-ffmpeg | --without-ffmpeg] [--with-imagemagick | --without-imagemagick]
 
 Options:
   --version TAG       Install a release tag such as v0.2.0 (default: latest).
   --install-dir PATH  Install the binary here (default: ~/.local/bin).
   --with-ffmpeg       Install FFmpeg if missing using the system package manager.
   --without-ffmpeg    Skip the FFmpeg install prompt.
+  --with-imagemagick  Install ImageMagick if missing using the system package manager.
+  --without-imagemagick  Skip the ImageMagick install prompt.
   --help              Show this help.
 
-The installer creates ~/evueditout. FFmpeg is required for presets and image
-filters; ImageMagick is required for evuthumb. Install those dependencies separately.
+The installer creates ~/evueditout. FFmpeg is required for video presets, image
+filters, and animated videos; ImageMagick is required for evuthumb.
 EOF
 }
 
@@ -42,6 +46,8 @@ while [ "$#" -gt 0 ]; do
 			;;
 		--with-ffmpeg) ffmpeg_mode=install; shift ;;
 		--without-ffmpeg) ffmpeg_mode=skip; shift ;;
+		--with-imagemagick) imagemagick_mode=install; shift ;;
+		--without-imagemagick) imagemagick_mode=skip; shift ;;
 		--help|-h) usage; exit 0 ;;
 		*) printf 'Unknown option: %s\n' "$1" >&2; usage >&2; exit 2 ;;
 	esac
@@ -131,12 +137,21 @@ install_ffmpeg() {
 	fi
 }
 
+install_imagemagick() {
+	if [ -n "$script_dir" ] && [ -f "$script_dir/install-imagemagick.sh" ]; then
+		sh "$script_dir/install-imagemagick.sh"
+	else
+		download "https://raw.githubusercontent.com/$repo/main/scripts/install-imagemagick.sh" "$tmp_dir/install-imagemagick.sh"
+		sh "$tmp_dir/install-imagemagick.sh"
+	fi
+}
+
 if ! command -v ffmpeg >/dev/null 2>&1 || ! command -v ffprobe >/dev/null 2>&1; then
 	if [ "$ffmpeg_mode" = install ]; then
 		install_ffmpeg
-	elif [ "$ffmpeg_mode" = prompt ] && [ -t 0 ]; then
-		printf '%s' 'FFmpeg is required for video presets, image filters, and animated videos. Install it now using your system package manager? [y/N] '
-		read -r answer
+	elif [ "$ffmpeg_mode" = prompt ] && [ -r /dev/tty ] && [ -w /dev/tty ]; then
+		printf '%s' 'FFmpeg is required for video presets, image filters, and animated videos. Install it now using your system package manager? [y/N] ' > /dev/tty
+		read -r answer < /dev/tty
 		case "$answer" in
 			y|Y|yes|YES|Yes) install_ffmpeg ;;
 			*) printf '%s\n' 'Skipping FFmpeg. Install it later with scripts/install-ffmpeg.sh.' ;;
@@ -146,5 +161,16 @@ if ! command -v ffmpeg >/dev/null 2>&1 || ! command -v ffprobe >/dev/null 2>&1; 
 	fi
 fi
 if ! command -v magick >/dev/null 2>&1 && ! { command -v convert >/dev/null 2>&1 && convert -version 2>&1 | head -n 1 | grep -q ImageMagick; }; then
-	printf '%s\n' 'Note: ImageMagick is not on PATH; evuthumb will need it.'
+	if [ "$imagemagick_mode" = install ]; then
+		install_imagemagick
+	elif [ "$imagemagick_mode" = prompt ] && [ -r /dev/tty ] && [ -w /dev/tty ]; then
+		printf '%s' 'ImageMagick is required for evuthumb. Install it now using your system package manager? [y/N] ' > /dev/tty
+		read -r answer < /dev/tty
+		case "$answer" in
+			y|Y|yes|YES|Yes) install_imagemagick ;;
+			*) printf '%s\n' 'Skipping ImageMagick. Install it later with scripts/install-imagemagick.sh.' ;;
+		esac
+	else
+		printf '%s\n' 'Note: ImageMagick is not on PATH; evuthumb will need it. Install later with scripts/install-imagemagick.sh.'
+	fi
 fi

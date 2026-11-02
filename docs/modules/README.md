@@ -1,6 +1,6 @@
 # Module documentation
 
-Each CLI tool has a module guide named `docs/modules/<tool>.md`. The guide is the usage reference for that tool and should be updated in the same change as its implementation.
+Image and video module guides also describe folder batch input where supported. Each CLI tool has a module guide named `docs/modules/<tool>.md`. The guide is the usage reference for that tool and should be updated in the same change as its implementation.
 
 Every module guide should describe:
 
