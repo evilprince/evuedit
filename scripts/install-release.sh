@@ -119,15 +119,46 @@ tar -xzf "$tmp_dir/$asset" -C "$tmp_dir"
 "$tmp_dir/evuedit" --help >/dev/null
 
 mkdir -p "$install_dir" "$HOME/evueditout"
+install_dir=$(CDPATH= cd -- "$install_dir" && pwd)
 cp "$tmp_dir/evuedit" "$install_dir/evuedit"
 chmod 0755 "$install_dir/evuedit"
 
 printf 'Installed evuedit to %s/evuedit\n' "$install_dir"
 printf 'Created %s/evueditout\n' "$HOME"
-case ":${PATH}:" in
-	*":$install_dir:"*) ;;
-	*) printf 'Add %s to your PATH to run evuedit from any directory.\n' "$install_dir" ;;
-esac
+configure_path() {
+	shell_name=${SHELL##*/}
+	case "$shell_name" in
+		zsh) profile="$HOME/.zshrc" ;;
+		bash)
+			if [ "$(uname -s)" = Darwin ]; then profile="$HOME/.bash_profile"; else profile="$HOME/.bashrc"; fi
+			;;
+		fish) profile="$HOME/.config/fish/config.fish" ;;
+		*) profile="$HOME/.profile" ;;
+	esac
+	marker='# evuedit PATH setup'
+	if [ -f "$profile" ] && grep -Fq "$install_dir" "$profile"; then
+		printf 'PATH already references %s in %s\n' "$install_dir" "$profile"
+		return
+	fi
+	quoted_install_dir=$(printf "'%s'" "$(printf '%s' "$install_dir" | sed "s/'/'\\\\''/g")")
+	if ! {
+		printf '\n%s\n' "$marker"
+		if [ "$shell_name" = fish ]; then
+			printf 'fish_add_path %s\n' "$quoted_install_dir"
+		else
+			printf 'case ":$PATH:" in\n'
+			printf '  *:%s:*) ;;\n' "$quoted_install_dir"
+			printf '  *) PATH=%s:"$PATH" ;;\n' "$quoted_install_dir"
+			printf 'esac\nexport PATH\n'
+		fi
+	} >> "$profile"; then
+		printf 'Could not update %s; add %s to PATH manually.\n' "$profile" "$install_dir" >&2
+		return
+	fi
+	printf 'Added %s to PATH in %s. Restart your terminal to use evuedit.\n' "$install_dir" "$profile"
+}
+
+configure_path
 install_ffmpeg() {
 	if [ -n "$script_dir" ] && [ -f "$script_dir/install-ffmpeg.sh" ]; then
 		sh "$script_dir/install-ffmpeg.sh"

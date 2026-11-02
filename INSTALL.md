@@ -22,11 +22,7 @@ The installer downloads the matching macOS or Linux binary, checks its SHA-256 c
 curl -fsSL https://raw.githubusercontent.com/evilprince/evuedit/main/scripts/install-release.sh | sh -s -- --with-ffmpeg --with-imagemagick
 ```
 
-Go is not needed to run a prebuilt release. It is needed only if you build evuedit from source. If `~/.local/bin` is not already on your `PATH`, add this line to your shell startup file (`~/.zshrc` on the default macOS shell, or `~/.bashrc` on many Linux systems), then open a new terminal:
-
-```sh
-export PATH="$HOME/.local/bin:$PATH"
-```
+Go is not needed to run a prebuilt release. During installation, the installer detects your shell and adds the install directory to its startup file (`.zshrc`, Bash's startup file, or Fish config). This is safe to run more than once. Open a new terminal window after installation for the updated `PATH` to take effect; the installer cannot change the environment of a terminal that is already open.
 
 Confirm the installation:
 

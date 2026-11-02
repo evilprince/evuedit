@@ -16,7 +16,7 @@ To install a specific release, such as `v0.2.0`, run:
 curl -fsSL https://raw.githubusercontent.com/evilprince/evuedit/main/scripts/install-release.sh | sh -s -- --version v0.2.0
 ```
 
-The installer selects the matching platform build, verifies its checksum, installs to `~/.local/bin/evuedit`, and creates `~/evueditout`. If FFmpeg or ImageMagick is missing, it offers to install each through your system package manager. Go is needed only for building from source. See [INSTALL.md](INSTALL.md) for version selection, dependency installation options, PATH setup, source installation, and release publishing.
+The installer selects the matching platform build, verifies its checksum, installs to `~/.local/bin/evuedit`, creates `~/evueditout`, and adds the install directory to the detected shell's startup file. Open a new terminal after installation to use `evuedit` by name. If FFmpeg or ImageMagick is missing, it offers to install each through your system package manager. Go is needed only for building from source. See [INSTALL.md](INSTALL.md) for version selection, dependency installation options, source installation, and release publishing.
 
 The prebuilt CLI still uses external media tools: FFmpeg (`ffmpeg` and `ffprobe`) for video presets, image filters, and animated videos, and ImageMagick (`magick`) for thumbnails.
 
