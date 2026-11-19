@@ -1,0 +1,33 @@
+{
+  "version": "1.0",
+  "platform": "google_ads",
+  "output": {"format":"jpg","quality":90,"colorSpace":"sRGB","maxFileSizeMB":5,"preserveOriginal":true},
+  "campaigns": {
+    "performance_max": {"name":"Performance Max","assets":[
+      {"id":"landscape","type":"image","ratio":"1.91:1","width":1200,"height":628,"minWidth":600,"minHeight":314,"required":true,"recommendedCount":4,"maxCount":20,"safeArea":0.8},
+      {"id":"square","type":"image","ratio":"1:1","width":1200,"height":1200,"minWidth":300,"minHeight":300,"required":true,"recommendedCount":4,"maxCount":20,"safeArea":0.8},
+      {"id":"portrait","type":"image","ratio":"4:5","width":960,"height":1200,"minWidth":480,"minHeight":600,"required":false,"recommendedCount":2,"maxCount":20,"safeArea":0.8},
+      {"id":"square_logo","type":"logo","ratio":"1:1","width":1200,"height":1200,"minWidth":128,"minHeight":128,"required":true,"recommendedCount":1,"maxCount":5},
+      {"id":"landscape_logo","type":"logo","ratio":"4:1","width":1200,"height":300,"minWidth":512,"minHeight":128,"required":false,"recommendedCount":1,"maxCount":5}
+    ]},
+    "demand_gen": {"name":"Demand Gen","assets":[
+      {"id":"landscape","type":"image","ratio":"1.91:1","width":1200,"height":628,"required":false,"recommendedCount":3,"maxCount":20},
+      {"id":"square","type":"image","ratio":"1:1","width":1200,"height":1200,"required":false,"recommendedCount":3,"maxCount":20},
+      {"id":"portrait","type":"image","ratio":"4:5","width":960,"height":1200,"required":false,"recommendedCount":3,"maxCount":20},
+      {"id":"vertical","type":"image","ratio":"9:16","width":1080,"height":1920,"required":false,"recommendedCount":3,"maxCount":20},
+      {"id":"square_logo","type":"logo","ratio":"1:1","width":1200,"height":1200,"minWidth":144,"minHeight":144,"required":true,"recommendedCount":1,"maxCount":1}
+    ],"copy":{"headlineMaxCharacters":40,"headlineRecommendedCount":3,"descriptionMaxCharacters":90,"descriptionRecommendedCount":3}},
+    "responsive_display": {"name":"Responsive Display Ads","assets":[
+      {"id":"landscape","type":"image","ratio":"1.91:1","width":1200,"height":628,"recommendedCount":5,"maxCount":15},
+      {"id":"square","type":"image","ratio":"1:1","width":1200,"height":1200,"recommendedCount":5,"maxCount":15},
+      {"id":"vertical","type":"image","ratio":"9:16","width":900,"height":1600,"recommendedCount":3,"maxCount":15},
+      {"id":"square_logo","type":"logo","ratio":"1:1","width":1200,"height":1200,"minWidth":128,"minHeight":128,"recommendedCount":1,"maxCount":5},
+      {"id":"landscape_logo","type":"logo","ratio":"4:1","width":1200,"height":300,"minWidth":512,"minHeight":128,"recommendedCount":1,"maxCount":5}
+    ],"copy":{"shortHeadlineMaxCharacters":30,"shortHeadlineMaxCount":5,"longHeadlineMaxCharacters":90,"longHeadlineMaxCount":5,"descriptionMaxCharacters":90,"descriptionMaxCount":5}},
+    "search_image_assets": {"name":"Search Image Assets","assets":[
+      {"id":"square","type":"image","ratio":"1:1","width":1200,"height":1200,"minWidth":300,"minHeight":300,"required":true,"recommendedCount":4,"maxCount":20},
+      {"id":"landscape","type":"image","ratio":"1.91:1","width":1200,"height":628,"minWidth":600,"minHeight":314,"required":false,"recommendedCount":1,"maxCount":20}
+    ]}
+  },
+  "fixed_display":{"maxFileSizeKB":150,"animated":false,"formats":["jpg","png","gif"],"sizes":[{"id":"medium_rectangle","width":300,"height":250},{"id":"large_rectangle","width":336,"height":280},{"id":"leaderboard","width":728,"height":90},{"id":"large_leaderboard","width":970,"height":90},{"id":"wide_skyscraper","width":160,"height":600},{"id":"half_page","width":300,"height":600},{"id":"mobile_leaderboard","width":320,"height":50}]}
+}

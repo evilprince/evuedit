@@ -21,6 +21,7 @@ var tools = []Tool{
 	imageFilterTool{},
 	thumbTool{},
 	motionTool{},
+	adsTool{},
 }
 
 func main() {

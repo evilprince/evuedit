@@ -88,6 +88,10 @@ List available image filters with `evuedit --module evufilters --list`. Apply a 
 
 Create YouTube, Instagram, and Facebook placement covers from a JSON layout template and a headline with `evuedit --module evuthumb --template street-food --platform facebook --file ./dish.jpg --headline "THE BEST STREET FOOD" --output thumbnail.jpg`. Facebook supports video (1280×720), feed (1080×1350), square (1080×1080), Reels (1080×1920), and link preview (1200×630) canvases; `--platform facebook` remains an alias for `facebook-reels`. The ten templates in `templates/` are embedded in the CLI. `food-comparison` accepts `--compare-file`, `food-deal` accepts `--price`, and `restaurant-review` accepts `--secondary-text`. To generate multiple headline variations, pass `--headlines-file ./headlines.txt`; each non-empty line creates a numbered output. ImageMagick is required. See the [thumbnail module guide](docs/modules/evuthumb.md) for template settings and layout behavior.
 
+## Google Ads image assets
+
+Generate campaign image variants with `evuedit --module evuads --platform google --adtype performance_max --file ./product.jpg`. Files are named from the input stem, size, and ad type, such as `product_landscape_performance_max.jpg`, and written under `~/evueditout`. Add `--logo ./logo.png` to generate the campaign's logo asset sizes. See the [Google Ads module guide](docs/modules/evuads.md) for supported ad types and catalog behavior.
+
 ## Errors
 
 The CLI reports errors for missing or unsupported options, unknown presets, landscape or square input, unavailable input/output paths, an output filename that is not MP4, an existing output file, missing profile LUT, or missing/failed FFmpeg/ffprobe. FFmpeg's diagnostic output is passed through to the terminal.

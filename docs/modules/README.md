@@ -17,3 +17,4 @@ Every module guide should describe:
 - [evufilters](evufilters.md) — apply JSON-catalogued filters to JPEG, PNG, or WebP images, individually or as a complete variation set.
 - [evuthumb](evuthumb.md) — create deterministic YouTube, Instagram, or Facebook placement images from JSON templates and one or more headlines.
 - [evumotion](evumotion.md) — create template-driven animated short videos from a still image, headline, and optional transparent subject layer.
+- [evuads](evuads.md) — generate Google Ads campaign image sizes from the versioned `ads_templates.json` catalog.
