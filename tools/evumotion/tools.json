@@ -1,0 +1,68 @@
+[
+  {
+    "type": "function",
+    "name": "run_motion_video",
+    "description": "Build a CLI command for creating an 8-second animated evuedit portrait video from a still image. Exactly one of file and input_dir must be non-null. Long headlines wrap and are fitted automatically. The CLI requires FFmpeg.",
+    "parameters": {
+      "type": "object",
+      "properties": {
+        "template": {
+          "type": "string",
+          "description": "Motion template ID. Currently food-promo.",
+          "enum": [
+            "food-promo"
+          ]
+        },
+        "platform": {
+          "type": "string",
+          "description": "Target short-form platform.",
+          "enum": [
+            "youtube",
+            "instagram",
+            "facebook"
+          ]
+        },
+        "file": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "One background image path. Set null when input_dir is provided."
+        },
+        "input_dir": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "Folder of background images. Set null when file is provided."
+        },
+        "foreground": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "Optional transparent PNG/WebP subject cutout path."
+        },
+        "headline": {
+          "type": "string",
+          "description": "Headline text to wrap, fit, and animate."
+        },
+        "output": {
+          "type": "string",
+          "description": "Output MP4 filename. In folder mode, the CLI derives names from source images and template ID."
+        }
+      },
+      "required": [
+        "template",
+        "platform",
+        "file",
+        "input_dir",
+        "foreground",
+        "headline",
+        "output"
+      ],
+      "additionalProperties": false
+    },
+    "strict": true
+  }
+]

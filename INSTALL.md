@@ -16,7 +16,7 @@ To install a specific release, pass its tag to the installer:
 curl -fsSL https://raw.githubusercontent.com/evilprince/evuedit/main/scripts/install-release.sh | sh -s -- --version v0.2.0
 ```
 
-The installer downloads the matching macOS or Linux binary, checks its SHA-256 checksum, installs it to `~/.local/bin/evuedit`, and creates `~/evueditout` for generated files. If FFmpeg or ImageMagick is missing, it offers to install each using your system package manager. Package installation may ask for your administrator password. Use `--with-ffmpeg` or `--with-imagemagick` to install a missing dependency without a prompt; use `--without-ffmpeg` or `--without-imagemagick` to skip its prompt. To install both without prompts:
+The installer downloads the matching macOS or Linux package, checks its SHA-256 checksum, installs `evuedit` and `evuai` to `~/.local/bin`, and creates `~/evueditout` for generated files. If FFmpeg or ImageMagick is missing, it offers to install each using your system package manager. Package installation may ask for your administrator password. Use `--with-ffmpeg` or `--with-imagemagick` to install a missing dependency without a prompt; use `--without-ffmpeg` or `--without-imagemagick` to skip its prompt. To install both without prompts:
 
 ```sh
 curl -fsSL https://raw.githubusercontent.com/evilprince/evuedit/main/scripts/install-release.sh | sh -s -- --with-ffmpeg --with-imagemagick
@@ -28,7 +28,10 @@ Confirm the installation:
 
 ```sh
 evuedit --help
+evuai --help
 ```
+
+The `evuai` planner needs an OpenAI API key from the `OPENAI_API_KEY` environment variable. It selects a module, prepares arguments, and prints a suggested `evuedit` command without running it.
 
 ## Install external tools
 
@@ -49,7 +52,7 @@ cd evuedit
 ./scripts/install.sh
 ```
 
-This source installer builds the executable locally. Use `./scripts/install-imagemagick.sh` if you want the repository's optional ImageMagick installer.
+This source installer builds both executables locally. Use `./scripts/install-imagemagick.sh` if you want the repository's optional ImageMagick installer.
 
 ## Uninstall
 

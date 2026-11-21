@@ -1,0 +1,57 @@
+[
+  {
+    "type": "function",
+    "name": "run_google_ads_assets",
+    "description": "Build a CLI command for generating all configured image sizes for a Google Ads campaign type. The source file generates image assets; optional logo input generates logo asset sizes. Outputs are named <source-stem>_<size>_<adtype>.jpg. The CLI requires ImageMagick.",
+    "parameters": {
+      "type": "object",
+      "properties": {
+        "platform": {
+          "type": "string",
+          "description": "Ad platform. Use google.",
+          "enum": [
+            "google"
+          ]
+        },
+        "adtype": {
+          "type": "string",
+          "description": "Campaign/ad type.",
+          "enum": [
+            "performance_max",
+            "demand_gen",
+            "responsive_display",
+            "search_image_assets",
+            "fixed_display"
+          ]
+        },
+        "file": {
+          "type": "string",
+          "description": "Source image path for campaign image assets."
+        },
+        "logo": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "Optional logo image path for logo-sized outputs."
+        },
+        "output_dir": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "Optional output directory; null uses ~/evueditout."
+        }
+      },
+      "required": [
+        "platform",
+        "adtype",
+        "file",
+        "logo",
+        "output_dir"
+      ],
+      "additionalProperties": false
+    },
+    "strict": true
+  }
+]

@@ -1,0 +1,74 @@
+[
+  {
+    "type": "function",
+    "name": "run_video_preset",
+    "description": "Build a CLI command for applying one evuedit color preset to a video or a folder of videos. Exactly one of file and input_dir must be non-null. Folder mode applies the selected preset to each supported video; the CLI accepts a filename ending in .mp4 as output base.",
+    "parameters": {
+      "type": "object",
+      "properties": {
+        "apply": {
+          "type": "string",
+          "description": "Preset ID to apply.",
+          "enum": [
+            "masala-gold",
+            "midnight-diner",
+            "cafe-cream",
+            "street-food-pop",
+            "chefs-table",
+            "neutral-contrast",
+            "cinematic-warm",
+            "cool",
+            "monochrome"
+          ]
+        },
+        "file": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "One input video path. Set null when input_dir is provided."
+        },
+        "input_dir": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "Folder of videos for batch processing. Set null when file is provided."
+        },
+        "output": {
+          "type": "string",
+          "description": "Output MP4 filename. In folder mode this supplies the required .mp4 output extension/base."
+        },
+        "input_profile": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "Optional input color profile override; null uses the catalog default.",
+          "enum": [
+            "samsung-log",
+            "rec709",
+            null
+          ]
+        },
+        "profile_lut": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "Optional local Samsung Log to Rec.709 .cube LUT path. Required when the effective input profile is samsung-log."
+        }
+      },
+      "required": [
+        "apply",
+        "file",
+        "input_dir",
+        "output",
+        "input_profile",
+        "profile_lut"
+      ],
+      "additionalProperties": false
+    },
+    "strict": true
+  }
+]

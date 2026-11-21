@@ -25,6 +25,13 @@ var tools = []Tool{
 }
 
 func main() {
+	if executableName := strings.TrimSuffix(strings.ToLower(strings.TrimSpace(os.Args[0])), ".exe"); strings.HasSuffix(executableName, "/evuai") || executableName == "evuai" {
+		if err := runEvuai(os.Args[1:], os.Stdout, os.Stderr); err != nil {
+			fmt.Fprintln(os.Stderr, "evuai:", err)
+			os.Exit(1)
+		}
+		return
+	}
 	if err := run(os.Args[1:], os.Stdout, os.Stderr); err != nil {
 		fmt.Fprintln(os.Stderr, "evuedit:", err)
 		os.Exit(1)

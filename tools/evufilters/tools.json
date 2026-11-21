@@ -1,0 +1,106 @@
+[
+  {
+    "type": "function",
+    "name": "run_image_filters",
+    "description": "Build a CLI command for applying an evuedit image filter to one image or a folder. Exactly one of file and input_dir must be non-null. filter=all creates every available filter variation.",
+    "parameters": {
+      "type": "object",
+      "properties": {
+        "filter": {
+          "type": "string",
+          "description": "Image filter ID or all.",
+          "enum": [
+            "all",
+            "cool",
+            "monochrome",
+            "neutral",
+            "soft",
+            "vivid",
+            "warm",
+            "masala-glow",
+            "midnight-feast",
+            "cafe-cream",
+            "street-food-punch",
+            "chefs-editorial",
+            "crispy-detail",
+            "dessert-velvet",
+            "true-taste"
+          ]
+        },
+        "file": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "One source image path. Set null when input_dir is provided."
+        },
+        "input_dir": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "Folder of source images. Set null when file is provided."
+        },
+        "output": {
+          "type": "string",
+          "description": "Output filename/base, including a supported image extension."
+        },
+        "resize": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "Optional target canvas; null preserves input dimensions.",
+          "enum": [
+            "square",
+            "portrait",
+            "story",
+            "landscape",
+            "youtube",
+            "instagram",
+            "facebook",
+            "facebook-video",
+            "facebook-feed",
+            "facebook-square",
+            "facebook-reels",
+            "facebook-link-preview",
+            null
+          ]
+        },
+        "format": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "Optional explicit output format; null infers it from output.",
+          "enum": [
+            "jpg",
+            "png",
+            "webp",
+            null
+          ]
+        },
+        "quality": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "description": "Optional JPEG/WebP quality from 1 to 100; null uses the default. Do not set for PNG.",
+          "minimum": 1,
+          "maximum": 100
+        }
+      },
+      "required": [
+        "filter",
+        "file",
+        "input_dir",
+        "output",
+        "resize",
+        "format",
+        "quality"
+      ],
+      "additionalProperties": false
+    },
+    "strict": true
+  }
+]

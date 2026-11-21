@@ -27,7 +27,8 @@ for target in "darwin amd64" "darwin arm64" "linux amd64" "linux arm64"; do
 	mkdir -p "$target_dir"
 	printf 'Building %s/%s...\n' "$goos" "$goarch"
 	GOOS="$goos" GOARCH="$goarch" CGO_ENABLED=0 go build -trimpath -o "$target_dir/evuedit" .
-	tar -czf "$dist_dir/$asset" -C "$target_dir" evuedit
+	GOOS="$goos" GOARCH="$goarch" CGO_ENABLED=0 go build -trimpath -o "$target_dir/evuai" .
+	tar -czf "$dist_dir/$asset" -C "$target_dir" evuedit evuai
 done
 
 (

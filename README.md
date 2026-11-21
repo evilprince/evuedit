@@ -16,7 +16,7 @@ To install a specific release, such as `v0.2.0`, run:
 curl -fsSL https://raw.githubusercontent.com/evilprince/evuedit/main/scripts/install-release.sh | sh -s -- --version v0.2.0
 ```
 
-The installer selects the matching platform build, verifies its checksum, installs to `~/.local/bin/evuedit`, creates `~/evueditout`, and adds the install directory to the detected shell's startup file. Open a new terminal after installation to use `evuedit` by name. If FFmpeg or ImageMagick is missing, it offers to install each through your system package manager. Go is needed only for building from source. See [INSTALL.md](INSTALL.md) for version selection, dependency installation options, source installation, and release publishing.
+The installer selects the matching platform build, verifies its checksum, installs `evuedit` and `evuai` to `~/.local/bin`, creates `~/evueditout`, and adds the install directory to the detected shell's startup file. Open a new terminal after installation to use the commands by name. If FFmpeg or ImageMagick is missing, it offers to install each through your system package manager. Go is needed only for building from source. See [INSTALL.md](INSTALL.md) for version selection, dependency installation options, source installation, and release publishing.
 
 The prebuilt CLI still uses external media tools: FFmpeg (`ffmpeg` and `ffprobe`) for video presets, image filters, and animated videos, and ImageMagick (`magick`) for thumbnails.
 
@@ -33,7 +33,7 @@ The prebuilt CLI still uses external media tools: FFmpeg (`ffmpeg` and `ffprobe`
 go build -o evuedit .
 ```
 
-Run `./scripts/install.sh` to build and install the executable to `~/.local/bin/evuedit`. The installer also creates `~/evueditout` and can offer to install FFmpeg and ImageMagick if missing. Use `--with-ffmpeg` or `--with-imagemagick` to install either dependency directly, or the corresponding `--without-*` option to skip it. Separate helpers are available at `./scripts/install-ffmpeg.sh` and `./scripts/install-imagemagick.sh`. These package installers do not install Homebrew itself. Ensure `~/.local/bin` is on your `PATH`. To build for another supported OS/architecture, set Go's `GOOS` and `GOARCH` before running `go build` (for example, `GOOS=linux GOARCH=amd64 go build -o evuedit-linux-amd64 .`).
+Run `./scripts/install.sh` to build and install `evuedit` and `evuai` to `~/.local/bin`. The installer also creates `~/evueditout` and can offer to install FFmpeg and ImageMagick if missing. Use `--with-ffmpeg` or `--with-imagemagick` to install either dependency directly, or the corresponding `--without-*` option to skip it. Separate helpers are available at `./scripts/install-ffmpeg.sh` and `./scripts/install-imagemagick.sh`. These package installers do not install Homebrew itself. Ensure `~/.local/bin` is on your `PATH`. To build for another supported OS/architecture, set Go's `GOOS` and `GOARCH` before running `go build` (for example, `GOOS=linux GOARCH=amd64 go build -o evuedit-linux-amd64 .`).
 
 ## Apply a color preset
 
@@ -99,6 +99,10 @@ The CLI reports errors for missing or unsupported options, unknown presets, land
 ## Adding another tool
 
 New editing features should be implemented as separate tools. Implement the `Tool` interface (`Name`, `Description`, and `Run`) and register the tool in `main.go`. Define that tool's flags in its own `Run` method using a dedicated `flag.FlagSet`. This keeps options such as trim ranges or resize dimensions scoped to the tool that uses them, while preserving the shared `evuedit --tool <name> ...` interface.
+
+OpenAI function tool schemas for using a model to prepare CLI arguments are in [`tools/`](tools/README.md), with one strict `tools.json` per module. They describe parameters only; map the returned values to CLI flags and execute `evuedit` separately.
+
+Build the planner as a separate executable with `go build -o evuai .`. Set `OPENAI_API_KEY`, then ask for a suggested command with `./evuai "make a warm thumbnail from ./dish.jpg with the headline FRESH OFF THE GRILL"`. First, it sends the query with descriptions of the modules so the model can choose one. Then it sends the query again with only that module's tool schema to produce CLI arguments. Limit module choices with `--module evuthumb,evufilters`, or select a model with `--model <model>` (the default is `OPENAI_MODEL` or `gpt-4.1-mini`). `evuai` prints the selected tool arguments and a suggested shell command; it never runs the command.
 
 ## Tests
 

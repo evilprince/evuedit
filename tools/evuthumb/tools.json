@@ -1,0 +1,109 @@
+[
+  {
+    "type": "function",
+    "name": "run_thumbnail",
+    "description": "Build a CLI command for creating a template-based evuedit thumbnail. Exactly one of file and input_dir must be non-null and exactly one of headline and headlines_file must be non-null. The CLI requires ImageMagick.",
+    "parameters": {
+      "type": "object",
+      "properties": {
+        "template": {
+          "type": "string",
+          "description": "Thumbnail template ID.",
+          "enum": [
+            "cafe-coffee",
+            "dessert",
+            "fine-dining",
+            "food-challenge",
+            "food-comparison",
+            "food-deal",
+            "instagram-cover",
+            "restaurant-review",
+            "street-food",
+            "youtube-review"
+          ]
+        },
+        "platform": {
+          "type": "string",
+          "description": "Output canvas/placement. facebook is an alias for facebook-reels.",
+          "enum": [
+            "youtube",
+            "instagram",
+            "facebook",
+            "facebook-video",
+            "facebook-feed",
+            "facebook-square",
+            "facebook-reels",
+            "facebook-link-preview"
+          ]
+        },
+        "file": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "One source image path. Set null when input_dir is provided."
+        },
+        "input_dir": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "Folder of source images. Set null when file is provided."
+        },
+        "headline": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "One headline string. Set null when headlines_file is provided."
+        },
+        "headlines_file": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "UTF-8 file with one headline per non-empty line. Set null when headline is provided."
+        },
+        "output": {
+          "type": "string",
+          "description": "Output JPEG filename/base."
+        },
+        "compare_file": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "Optional second image; required by food-comparison and unsupported by other templates."
+        },
+        "price": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "Optional price text; required by food-deal and unsupported by other templates."
+        },
+        "secondary_text": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "Optional subtitle; required by restaurant-review and unsupported by other templates."
+        }
+      },
+      "required": [
+        "template",
+        "platform",
+        "file",
+        "input_dir",
+        "headline",
+        "headlines_file",
+        "output",
+        "compare_file",
+        "price",
+        "secondary_text"
+      ],
+      "additionalProperties": false
+    },
+    "strict": true
+  }
+]

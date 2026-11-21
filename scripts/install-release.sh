@@ -114,14 +114,26 @@ fi
 [ "$actual" = "$expected" ] || { printf 'Checksum verification failed for %s.\n' "$asset" >&2; exit 1; }
 
 members=$(tar -tzf "$tmp_dir/$asset")
-[ "$members" = evuedit ] || { printf 'Unexpected files in release archive: %s\n' "$members" >&2; exit 1; }
+expected_members=$(printf 'evuedit\nevuai')
+[ "$members" = evuedit ] || [ "$members" = "$expected_members" ] || {
+	printf 'Unexpected files in release archive: %s\n' "$members" >&2
+	exit 1
+}
 tar -xzf "$tmp_dir/$asset" -C "$tmp_dir"
 "$tmp_dir/evuedit" --help >/dev/null
+if [ -f "$tmp_dir/evuai" ]; then
+	"$tmp_dir/evuai" --help >/dev/null
+fi
 
 mkdir -p "$install_dir" "$HOME/evueditout"
 install_dir=$(CDPATH= cd -- "$install_dir" && pwd)
 cp "$tmp_dir/evuedit" "$install_dir/evuedit"
 chmod 0755 "$install_dir/evuedit"
+if [ -f "$tmp_dir/evuai" ]; then
+	cp "$tmp_dir/evuai" "$install_dir/evuai"
+	chmod 0755 "$install_dir/evuai"
+	printf 'Installed evuai to %s/evuai\n' "$install_dir"
+fi
 
 printf 'Installed evuedit to %s/evuedit\n' "$install_dir"
 printf 'Created %s/evueditout\n' "$HOME"

@@ -11,9 +11,9 @@ usage() {
 	cat <<'EOF'
 Usage: scripts/install.sh [--with-imagemagick | --without-imagemagick] [--with-ffmpeg | --without-ffmpeg]
 
-Build and install evuedit under ~/.local/bin and create ~/evueditout.
+Build and install evuedit and evuai under ~/.local/bin and create ~/evueditout.
 If ImageMagick is missing, ask whether to install it using the system package manager.
-Add ~/.local/bin to the detected shell's startup file so evuedit is available in new terminals.
+Add ~/.local/bin to the detected shell's startup file so both commands are available in new terminals.
 
 Options:
   --with-imagemagick     Install ImageMagick when it is missing.
@@ -81,9 +81,11 @@ fi
 mkdir -p "$install_dir" "$output_dir"
 cd "$project_dir"
 go build -o "$install_dir/evuedit" .
-chmod 0755 "$install_dir/evuedit"
+go build -o "$install_dir/evuai" .
+chmod 0755 "$install_dir/evuedit" "$install_dir/evuai"
 
 printf 'Installed evuedit to %s\n' "$install_dir/evuedit"
+printf 'Installed evuai to %s\n' "$install_dir/evuai"
 printf 'Created output directory %s\n' "$output_dir"
 
 configure_path() {
