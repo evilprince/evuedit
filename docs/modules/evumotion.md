@@ -44,6 +44,8 @@ evuedit --module evumotion \
 
 The `food-promo` template applies a gentle float to the cutout. The template, not command-line options, controls animation style and timing. The supported headline animations are fade, slide-up, and pop; the starter template selects fade. Subject animation can be none, float, or slide-up.
 
+Long headlines are automatically wrapped at word boundaries and centered within a safe area. The renderer reduces the template font size as needed, down to half the configured size (with a 28 px minimum). If the headline still cannot fit, it fails with an instruction to shorten the text instead of writing clipped output. Explicit line breaks are retained.
+
 ## Inputs, output, and errors
 
 - `--template`, `--platform`, `--file`, `--headline`, and `--output` are required. `--foreground` is optional.

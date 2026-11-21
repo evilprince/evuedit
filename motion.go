@@ -13,6 +13,7 @@ import (
 	"path/filepath"
 	"strings"
 	"time"
+	"unicode"
 )
 
 //go:embed motion_templates.json
@@ -202,7 +203,12 @@ func (motionTool) Run(args []string, stdout, stderr io.Writer) error {
 	}
 	textPath := textFile.Name()
 	defer os.Remove(textPath)
-	if _, err = textFile.WriteString(*headline); err != nil {
+	fittedHeadline, fittedFontSize, err := fitMotionHeadline(*headline, tmpl)
+	if err != nil {
+		textFile.Close()
+		return err
+	}
+	if _, err = textFile.WriteString(fittedHeadline); err != nil {
 		textFile.Close()
 		return err
 	}
@@ -213,7 +219,7 @@ func (motionTool) Run(args []string, stdout, stderr io.Writer) error {
 	if fg != "" {
 		argsFF = append(argsFF, "-loop", "1", "-framerate", fmt.Sprint(tmpl.FPS), "-i", fg)
 	}
-	graph := motionFilterGraph(*tmpl, textPath, fg != "")
+	graph := motionFilterGraphAtSize(*tmpl, textPath, fg != "", fittedFontSize)
 	argsFF = append(argsFF, "-filter_complex", graph, "-map", "[outv]", "-t", fmt.Sprintf("%.3f", tmpl.Duration), "-r", fmt.Sprint(tmpl.FPS), "-an", "-c:v", tmpl.Export.VideoCodec, "-pix_fmt", tmpl.Export.PixelFormat, "-color_range", "tv", "-crf", fmt.Sprint(tmpl.Export.CRF), "-movflags", "+faststart", out)
 	reservation, err := os.OpenFile(out, os.O_WRONLY|os.O_CREATE|os.O_EXCL, 0644)
 	if err != nil {
@@ -256,6 +262,10 @@ func validateMotionInput(path string, exts ...string) error {
 	return fmt.Errorf("unsupported input format %q", ext)
 }
 func motionFilterGraph(t motionTemplate, textFile string, hasForeground bool) string {
+	return motionFilterGraphAtSize(t, textFile, hasForeground, t.Headline.FontSize)
+}
+
+func motionFilterGraphAtSize(t motionTemplate, textFile string, hasForeground bool, fontSize int) string {
 	w, h := t.Canvas.Width, t.Canvas.Height
 	bg := fmt.Sprintf("[0:v]scale=%d:%d:force_original_aspect_ratio=increase,crop=%d:%d,setsar=1[bg]", w, h, w, h)
 	base := "[bg]"
@@ -273,7 +283,7 @@ func motionFilterGraph(t motionTemplate, textFile string, hasForeground bool) st
 		base = "[composed]"
 	}
 	anim := "if(lt(t\\," + fmt.Sprintf("%.3f", t.Headline.Start) + ")\\,0\\,if(lt(t\\," + fmt.Sprintf("%.3f", t.Headline.Start+t.Headline.Duration) + ")\\,(t-" + fmt.Sprintf("%.3f", t.Headline.Start) + ")/" + fmt.Sprintf("%.3f", t.Headline.Duration) + "\\,1))"
-	fontsize := fmt.Sprint(t.Headline.FontSize)
+	fontsize := fmt.Sprint(fontSize)
 	x := "(w-text_w)/2"
 	y := "(h-text_h)/2"
 	if t.Headline.Position == "bottom-center" {
@@ -283,9 +293,120 @@ func motionFilterGraph(t motionTemplate, textFile string, hasForeground bool) st
 	case "slide-up":
 		y = "h-text_h-180+120*(1-min(1\\,max(0\\,(t-" + fmt.Sprintf("%.3f", t.Headline.Start) + ")/" + fmt.Sprintf("%.3f", t.Headline.Duration) + ")))"
 	case "pop":
-		fontsize = "" + fmt.Sprint(t.Headline.FontSize) + "*min(1\\,max(0\\,(t-" + fmt.Sprintf("%.3f", t.Headline.Start) + ")/" + fmt.Sprintf("%.3f", t.Headline.Duration) + "))"
+		fontsize = fmt.Sprint(fontSize) + "*min(1\\,max(0\\,(t-" + fmt.Sprintf("%.3f", t.Headline.Start) + ")/" + fmt.Sprintf("%.3f", t.Headline.Duration) + "))"
 	}
-	return bg + fmt.Sprintf(";%sdrawtext=font='%s':textfile='%s':fontsize=%s:fontcolor=%s:x='%s':y='%s':alpha='%s',format=yuv420p[outv]", base, t.Headline.Font, textFile, fontsize, t.Headline.Color, x, y, anim)
+	return bg + fmt.Sprintf(";%sdrawtext=font='%s':textfile='%s':fontsize=%s:fontcolor=%s:x='%s':y='%s':alpha='%s':fix_bounds=1,format=yuv420p[outv]", base, t.Headline.Font, textFile, fontsize, t.Headline.Color, x, y, anim)
+}
+
+// fitMotionHeadline wraps at word boundaries, then reduces the template font size
+// until the estimated text block fits inside a conservative safe area.
+func fitMotionHeadline(headline string, template *motionTemplate) (string, int, error) {
+	if template == nil || template.Canvas.Width < 1 || template.Canvas.Height < 1 || template.Headline.FontSize < 1 {
+		return "", 0, errors.New("cannot fit headline: template canvas or font size is invalid")
+	}
+	widthLimit := float64(template.Canvas.Width) * 0.80
+	heightLimit := float64(template.Canvas.Height) * 0.80
+	if template.Headline.Position == "bottom-center" {
+		heightLimit = float64(template.Canvas.Height)*0.82 - 180
+	}
+	minimumSize := maxInt(28, template.Headline.FontSize/2)
+	for size := template.Headline.FontSize; size >= minimumSize; size-- {
+		lines := wrapMotionHeadline(headline, widthLimit, size)
+		lineHeight := float64(size) * 1.35
+		if len(lines) > 0 && float64(len(lines))*lineHeight <= heightLimit {
+			return strings.Join(lines, "\n"), size, nil
+		}
+	}
+	return "", 0, fmt.Errorf("headline is too long to fit in the %dx%d video safe area, even at the minimum font size (%d px); shorten the headline", template.Canvas.Width, template.Canvas.Height, minimumSize)
+}
+
+func wrapMotionHeadline(headline string, maxWidth float64, fontSize int) []string {
+	if maxWidth <= 0 || fontSize <= 0 {
+		return nil
+	}
+	// Character widths are deliberately estimated generously so different FFmpeg
+	// font builds do not push text up against the frame edge.
+	maxUnits := maxWidth / (float64(fontSize) * 1.15)
+	var lines []string
+	for _, paragraph := range strings.Split(strings.TrimSpace(headline), "\n") {
+		words := strings.Fields(paragraph)
+		if len(words) == 0 {
+			continue
+		}
+		line := ""
+		lineUnits := 0.0
+		for _, word := range words {
+			wordUnits := motionTextWidthUnits(word)
+			if wordUnits > maxUnits {
+				if line != "" {
+					lines = append(lines, line)
+					line, lineUnits = "", 0
+				}
+				chunk := ""
+				chunkUnits := 0.0
+				for _, r := range word {
+					runeUnits := motionRuneWidthUnits(r)
+					if chunk != "" && chunkUnits+runeUnits > maxUnits {
+						lines = append(lines, chunk)
+						chunk, chunkUnits = "", 0
+					}
+					chunk += string(r)
+					chunkUnits += runeUnits
+				}
+				line, lineUnits = chunk, chunkUnits
+				continue
+			}
+			spaceUnits := 0.0
+			if line != "" {
+				spaceUnits = motionRuneWidthUnits(' ')
+			}
+			if line != "" && lineUnits+spaceUnits+wordUnits > maxUnits {
+				lines = append(lines, line)
+				line, lineUnits = word, wordUnits
+			} else {
+				if line != "" {
+					line += " "
+					lineUnits += spaceUnits
+				}
+				line += word
+				lineUnits += wordUnits
+			}
+		}
+		if line != "" {
+			lines = append(lines, line)
+		}
+	}
+	return lines
+}
+
+func motionTextWidthUnits(text string) float64 {
+	width := 0.0
+	for _, r := range text {
+		width += motionRuneWidthUnits(r)
+	}
+	return width
+}
+
+func motionRuneWidthUnits(r rune) float64 {
+	if unicode.Is(unicode.Han, r) || unicode.Is(unicode.Hangul, r) || unicode.Is(unicode.Hiragana, r) || unicode.Is(unicode.Katakana, r) || unicode.IsSymbol(r) {
+		return 1.0
+	}
+	if unicode.IsSpace(r) {
+		return 0.34
+	}
+	if strings.ContainsRune("ilI.,'`:;!|()[]{}", r) {
+		return 0.36
+	}
+	if strings.ContainsRune("MW@%&QO", r) {
+		return 0.9
+	}
+	if unicode.IsUpper(r) {
+		return 0.72
+	}
+	if unicode.IsDigit(r) {
+		return 0.64
+	}
+	return 0.62
 }
 func printMotionHelp(w io.Writer) {
 	fmt.Fprintln(w, "Usage: evuedit --module evumotion --template <id> --platform <youtube|instagram|facebook> --file <image> [--foreground <transparent-subject.png>] --headline \"text\" --output <video.mp4>")
