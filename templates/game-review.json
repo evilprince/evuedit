@@ -1,0 +1,39 @@
+{
+  "id": "game-review",
+  "version": 1,
+  "description": "Bold 16:9 game preview thumbnail with a right-side subject, large left headline, top tag, and bottom caption.",
+  "canvas": {
+    "youtube": {"width": 1280, "height": 720},
+    "instagram": {"width": 1080, "height": 1920},
+    "facebook": {"width": 1080, "height": 1920},
+    "facebook-video": {"width": 1280, "height": 720, "aspectRatio": "16:9"},
+    "facebook-feed": {"width": 1080, "height": 1350, "aspectRatio": "4:5"},
+    "facebook-square": {"width": 1080, "height": 1080, "aspectRatio": "1:1"},
+    "facebook-reels": {"width": 1080, "height": 1920, "aspectRatio": "9:16"},
+    "facebook-link-preview": {"width": 1200, "height": 630, "aspectRatio": "1.91:1"}
+  },
+  "layout": {
+    "imageMode": "cover",
+    "subjectPosition": "right",
+    "gradient": "left-to-right",
+    "headlinePosition": "left-center",
+    "headlineMaxLines": 3,
+    "headlineMaxWords": 5,
+    "font": "assets/fonts/Anton-Regular.ttf",
+    "fontSizeRatio": 0.095,
+    "textColor": "#FFFFFF",
+    "accentColor": "#FFD43B",
+    "shadow": true,
+    "outlineText": true,
+    "outlineColor": "#111820",
+    "outlineWidthRatio": 0.004,
+    "labelText": "GAME PREVIEW",
+    "labelPosition": "top-left",
+    "labelBackground": "#17324A",
+    "secondaryTextPosition": "bottom-left",
+    "secondaryTextStyle": "badge",
+    "border": false,
+    "safeArea": {"topRatio": 0.06, "bottomRatio": 0.06, "leftRatio": 0.07, "rightRatio": 0.06}
+  },
+  "export": {"format": "jpeg", "quality": 92, "colorSpace": "sRGB"}
+}

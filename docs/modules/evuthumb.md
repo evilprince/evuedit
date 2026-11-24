@@ -57,9 +57,9 @@ The CLI preflights all headlines and destination names before rendering. Multipl
 
 ## Template catalog
 
-The versioned base catalog is [`thumb_templates.json`](../../thumb_templates.json). The CLI also embeds each JSON template in [`templates/`](../../templates/) and merges them by ID; a file in that folder replaces a base catalog entry with the same ID. Rebuild `evuedit` after editing either source. The imported set provides ten distinct templates.
+The versioned base catalog is [`thumb_templates.json`](../../thumb_templates.json). The CLI also embeds each JSON template in [`templates/`](../../templates/) and merges them by ID; a file in that folder replaces a base catalog entry with the same ID. Rebuild `evuedit` after editing either source. The templates folder provides eleven distinct templates.
 
-Three templates accept additional content on the command line:
+Four templates accept additional content on the command line:
 
 ```sh
 evuedit --module evuthumb --template food-comparison --platform youtube \
@@ -72,11 +72,19 @@ evuedit --module evuthumb --template food-deal --platform instagram \
 evuedit --module evuthumb --template restaurant-review --platform youtube \
   --file ./dish.jpg --headline "A HIDDEN GEM IN MUMBAI" \
   --secondary-text "Bandra, Mumbai · 4.8/5" --output review.jpg
+
+evuedit --module evuthumb --template game-review --platform youtube \
+  --file ./skatepark-background.jpg --headline "THE HYPE IS REAL" \
+  --secondary-text "FIRST IMPRESSIONS" --output skate-review.jpg
 ```
 
-The comparison template requires `--compare-file`; the food-deal template requires `--price`; and the restaurant-review template requires `--secondary-text`. Other templates reject those options. Template fonts in `assets/fonts/` fall back to a common installed system font when the bundled example font is absent.
+The comparison template requires `--compare-file`; the food-deal template requires `--price`; and the restaurant-review and game-review templates require `--secondary-text`. Other templates reject those options. Template fonts in `assets/fonts/` fall back to a common installed system font when the bundled example font is absent.
 
-Available template IDs are `cafe-coffee`, `dessert`, `fine-dining`, `food-challenge`, `food-comparison`, `food-deal`, `instagram-cover`, `restaurant-review`, `street-food`, and `youtube-review`. `--list` prints their descriptions. The JSON settings control cover or split-cover cropping, directional gradients, headline placement and safe areas, labels, optional panels and borders, text outlines, comparison labels, and JPEG export quality. Split comparison uses the two supplied images, one on each side.
+Available template IDs are `cafe-coffee`, `dessert`, `fine-dining`, `food-challenge`, `food-comparison`, `food-deal`, `game-review`, `instagram-cover`, `restaurant-review`, `street-food`, and `youtube-review`. `--list` prints their descriptions. The JSON settings control cover or split-cover cropping, directional gradients, headline placement and safe areas, labels, optional panels and borders, text outlines, comparison labels, and JPEG export quality. Split comparison uses the two supplied images, one on each side.
+
+The `game-review` template adapts a bold gaming-thumbnail layout with a right-positioned subject, large outlined headline on the left, `GAME PREVIEW` label, and bottom-left secondary caption.
+
+The renderer adds text and layout effects over one source image. It does not create or layer separate characters or other foreground cutouts, so provide a source image that already contains the desired subjects if that composition is needed.
 
 The initial template requests the `sans-serif` font. The CLI first resolves that default to a common installed font file on macOS or Linux, then falls back to ImageMagick's font lookup. A template can instead name a font family or a font file; absolute paths are used directly and relative paths resolve from the current working directory. Ensure any custom font is installed on the machine running the CLI.
 

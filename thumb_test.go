@@ -14,14 +14,14 @@ func TestThumbTemplateCatalogValidation(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	if len(catalog.Templates) != 10 {
-		t.Fatalf("loaded %d templates, want 10", len(catalog.Templates))
+	if len(catalog.Templates) != 11 {
+		t.Fatalf("loaded %d templates, want 11", len(catalog.Templates))
 	}
 	item, ok := findThumbTemplate(catalog, "street-food")
 	if !ok || item.Canvas["youtube"] != (thumbCanvas{Width: 1280, Height: 720}) || item.Canvas["instagram"] != (thumbCanvas{Width: 1080, Height: 1920}) || item.Canvas["facebook-reels"] != (thumbCanvas{Width: 1080, Height: 1920, AspectRatio: "9:16"}) || item.Canvas["facebook-video"] != (thumbCanvas{Width: 1280, Height: 720, AspectRatio: "16:9"}) || item.Canvas["facebook-feed"] != (thumbCanvas{Width: 1080, Height: 1350, AspectRatio: "4:5"}) || item.Canvas["facebook-square"] != (thumbCanvas{Width: 1080, Height: 1080, AspectRatio: "1:1"}) || item.Canvas["facebook-link-preview"] != (thumbCanvas{Width: 1200, Height: 630, AspectRatio: "1.91:1"}) || item.Layout.LabelText != "STREET FOOD" {
 		t.Fatalf("street-food canvases are incorrect: %+v", item.Canvas)
 	}
-	for _, id := range []string{"cafe-coffee", "dessert", "fine-dining", "food-challenge", "food-comparison", "food-deal", "instagram-cover", "restaurant-review", "street-food", "youtube-review"} {
+	for _, id := range []string{"cafe-coffee", "dessert", "fine-dining", "food-challenge", "food-comparison", "food-deal", "game-review", "instagram-cover", "restaurant-review", "street-food", "youtube-review"} {
 		if _, ok := findThumbTemplate(catalog, id); !ok {
 			t.Errorf("imported template %q is missing from the runtime catalog", id)
 		}
